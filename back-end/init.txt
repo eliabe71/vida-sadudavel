@@ -1,0 +1,16 @@
+Tecnologias : 
+Spring Boot 
+Documentação :
+ 	https://spring.io/projects/spring-boot
+Ou Golang
+	Caso Queiram em Go 
+	
+	https://tour.golang.org/welcome/1 <------ Ensina os conceitos da Linguagem 
+
+	E como são novos no Ecossistema Go, O caso não usaremos Sql Puro e Sim um ORM 
+	Como tbm é um projeto simples.
+
+	https://gorm.io/index.html <-  ORM
+
+
+
