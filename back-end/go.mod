@@ -4,4 +4,7 @@ go 1.17
 
 replace github.com/eliabe71/vida-saudavel/back-end/src/router => ./src
 
-require github.com/eliabe71/vida-saudavel/back-end/src/router v0.0.0-00010101000000-000000000000 // indirect
+require (
+	github.com/eliabe71/vida-saudavel/back-end/src/router v0.0.0-00010101000000-000000000000 // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
+)
