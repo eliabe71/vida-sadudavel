@@ -1,27 +1,27 @@
 package router
 
 import (
-	"encoding/json"
-	"io"
 	"net/http"
 )
 
-func e(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		io.WriteString(w, "Hello from a HandleFunc #1!\n")
-	}
+func handleMedics(w http.ResponseWriter, r *http.Request) {
+	// if r.Method == http.MethodGet {
+	// 	io.WriteString(w, "Hello from a HandleFunc #1!\n")
+	// 	w.Header().Add("Name", "Eliabe")
+	// }
+	// w.WriteHeader(http.StatusMethodNotAllowed)
+	// w.Header().Add("Name", "Eliabe")
+	// fmt.Print(w.Header().Get("Name"))
+	// fmt.Print(r.Header.Get("Key"))
+	// w.Header().Del("Data")
+	// js, _ := json.Marshal(r.Response)
 
-	r.Response = new(http.Response)
-	r.Response.Status = "Error"
-	r.Response.StatusCode = 404
-	js, _ := json.Marshal(r.Response)
-
-	io.WriteString(w, string(js))
+	// io.WriteString(w, string(js))
 
 }
-func Eliabe() {
-	http.HandleFunc("/c", e)
-	http.HandleFunc("/ca", e)
+func Router() {
+	http.HandleFunc("/medics", handleMedics)
+
 	http.ListenAndServe(":8084", nil)
 
 }
