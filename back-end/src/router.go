@@ -89,7 +89,33 @@ func handleConsultasC(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
+}
+func handleRecepcionista(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+	re := regexp.MustCompile(`\/[a-z]+\/[0-9]+$`)
+	if re.MatchString(r.URL.Path) {
+		re = regexp.MustCompile(`\/[a-z]+\/`)
+		numberS := re.Split(r.URL.Path, 2)[1]
+		re = regexp.MustCompile(`[0-9]+`)
+		byt := re.FindIndex([]byte(numberS))
+		b := []byte(numberS)
+		numberS = string(b[byt[0]:byt[1]])
+		stmt, err := db.DB.Query("SELECT name,lastname, id, medicoId From  recepcionista where cpf = $1", numberS)
 
+		if err == nil {
+			resp := models.Response{}
+			resp.Type = "Recepcionista"
+			for stmt.Next() {
+				cons := models.Recepcionista{}
+				stmt.Scan(cons.Name, cons.LastName, cons.Id, cons.MedicId)
+				resp.Data = append(resp.Data, cons)
+			}
+			bJson, _ := json.Marshal(resp)
+			w.Write(bJson)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 func Router() {
 
@@ -98,6 +124,7 @@ func Router() {
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
 	http.HandleFunc("/consultas/client/", handleConsultasC)
+	http.HandleFunc("/recepcionista/", handleRecepcionista)
 	http.ListenAndServe(":8084", nil)
 
 }
