@@ -15,7 +15,7 @@ var db *database.Db
 
 func handleMedics(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		stmt, err := db.DB.Query("SELECT name, lastname, city, state,crm,areaofocupation From Medico")
+		stmt, err := db.DB.Query("SELECT name, lastname, city, state,crm,areaofocupation,hourend,hourinit From Medico")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -23,7 +23,7 @@ func handleMedics(w http.ResponseWriter, r *http.Request) {
 		resp.Type = "Medics"
 		for stmt.Next() {
 			medics := models.Medico{}
-			stmt.Scan(&medics.Name, &medics.LastName, &medics.City, &medics.State, &medics.Crm, &medics.AreaOfOcupation)
+			stmt.Scan(&medics.Name, &medics.LastName, &medics.City, &medics.State, &medics.Crm, &medics.AreaOfOcupation, &medics.HourEnd, &medics.HourInit)
 			resp.Data = append(resp.Data, medics)
 		}
 
