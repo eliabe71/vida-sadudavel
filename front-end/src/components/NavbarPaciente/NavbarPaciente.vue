@@ -16,7 +16,7 @@
               Mais opções
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><router-link class="dropdown-item" to="#">Minhas consultas</router-link></li>
+              <li><router-link class="dropdown-item" to="/paciente/minhasConsultas">Minhas consultas</router-link></li>
               <li><router-link class="dropdown-item" to="#">Ver médicos disponíveis</router-link></li>
               <li><router-link class="dropdown-item" to="#">Meu histórico de consultas</router-link></li>
             </ul>
