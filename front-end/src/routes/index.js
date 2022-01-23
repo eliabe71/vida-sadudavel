@@ -20,7 +20,7 @@ export default [
     component: PacienteMinhasConsultas
   },
   {
-    path: 'paciente/minhasConsultas/edit/:id',
+    path: '/paciente/minhasConsultas/edit/:id',
     name: 'pacienteEditarConsulta',
     component: PacienteEditarConsulta,
     params: true

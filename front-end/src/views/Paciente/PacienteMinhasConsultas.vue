@@ -12,7 +12,7 @@
                 <p class="card-text"><b>Médico:</b> {{c.medico.nome}}</p>
                 <p class="card-text"><b>Data:</b> {{c.data}}</p>
                 <p class="card-text"><b>Horário:</b> {{c.horario}}</p>
-                <p class="card-text"><b>Preço:</b> {{c.preco}}</p>
+                <p class="card-text"><b>Preço:</b> R$ {{c.preco}},00</p>
               </div>
               <div class="cart-footer">
                 <span class="icon btn-excluir" >
@@ -38,7 +38,7 @@ export default {
   data(){
     return {
       consultas: [
-        {id: 0, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 0, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
         {id: 1, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
         {id: 2, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
         {id: 3, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
