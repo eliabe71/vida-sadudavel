@@ -144,7 +144,6 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 		}
 		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and hourinit>=CAST($2 AS TIME) and hourinit < CAST($2 AS TIME) + interval '25 minutes'`, consulta.MedicoID, consulta.HourInit)
 		if err == nil {
-			//and hourinit < time $2 + interval '25 minutes' or hourend < $2 + interval '25 minutes' and hourend >= $2
 			for stmt.Next() {
 				var count int
 				stmt.Scan(&count)
@@ -153,11 +152,9 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 					if err != nil {
 						w.WriteHeader(http.StatusBadRequest)
 					}
-
 				} else {
 					w.WriteHeader(http.StatusBadRequest)
 				}
-
 			}
 		} else {
 			w.WriteHeader(http.StatusBadRequest)
@@ -169,15 +166,19 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 		var consulta models.Medico
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&consulta)
-
+		fmt.Println("Aqui " + consulta.Crm)
 		stmt, err := db.DB.Query(`SELECT Count(*) From Medico Where crm=$1`, consulta.Crm)
+
 		if err == nil {
 			for stmt.Next() {
 				var count int
 				stmt.Scan(&count)
+
+				fmt.Println(count)
 				if count == 0 {
-					_, err := db.DB.Query("Insert into Medico (crm, city , state, areaofocupation, name, lastname, hourinit, hourend, price) values($1,$2,$3,$4,$5,$6,$7,$8,$9)", consulta.Crm, consulta.City, consulta.State, consulta.AreaOfOcupation, consulta.Name, consulta.LastName, consulta.HourInit, consulta.HourEnd, consulta.Price)
+					_, err := db.DB.Query("Insert into Medico (crm, city , state, areaofocupation, name, lastname, price, hourinit, hourend) values($1,$2,$3,$4,$5,$6,$7, CAST($8 AS TIME), CAST($9 AS TIME))", consulta.Crm, consulta.City, consulta.State, consulta.AreaOfOcupation, consulta.Name, consulta.LastName, consulta.Price, consulta.HourInit, consulta.HourEnd)
 					if err != nil {
+						fmt.Println(err)
 						w.WriteHeader(http.StatusBadRequest)
 					}
 				} else {
@@ -185,6 +186,7 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		} else {
+			fmt.Println(err)
 			w.WriteHeader(http.StatusBadRequest)
 		}
 	}
@@ -193,6 +195,7 @@ func Router() {
 
 	db = new(database.Db)
 	db.OpenDb()
+	//http.HandleFunc("/client", handleMedicoSingup)
 	http.HandleFunc("/medic", handleMedicoSingup)
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
