@@ -18,7 +18,7 @@
                 <span class="icon btn-excluir" >
                   <font-awesome-icon :icon="['fas', 'trash-alt']" />
                 </span>
-                <router-link class="icon btn-editar" :to="{name: 'pacienteEditarConsulta', params: {id: c.id, consulta:c}}">
+                <router-link class="icon btn-editar" :to="{name: 'pacienteEditarConsulta',  params:{id:c.id} }">
                   <font-awesome-icon :icon="['fas', 'edit']" />
                 </router-link>
               </div>
@@ -39,14 +39,14 @@ export default {
     return {
       consultas: [
         {id: 0, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 1, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 2, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 3, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 4, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 5, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 6, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 7, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 8, preco: 100, data: '03-02-2022', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 1, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 2, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 3, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 4, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 5, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 6, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 7, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
+        {id: 8, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
       ],
     }
   },

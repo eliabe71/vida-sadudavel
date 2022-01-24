@@ -9,6 +9,7 @@ import (
 
 	"github.com/eliabe71/vida-saudavel/back-end/src/database/database"
 	"github.com/eliabe71/vida-saudavel/back-end/src/models"
+	"github.com/eliabe71/vida-saudavel/back-end/src/utils"
 )
 
 var db *database.Db
@@ -117,12 +118,41 @@ func handleRecepcionista(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 }
+func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		var consulta models.Consulta
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&consulta)
+		utils.BiggerThen("", "2")
+		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and hourinit>=CAST($2 AS TIME) and hourinit < CAST($2 AS TIME) + interval '25 minutes'`, consulta.MedicoID, consulta.HourInit)
+		if err == nil {
+			//and hourinit < time $2 + interval '25 minutes' or hourend < $2 + interval '25 minutes' and hourend >= $2
+			for stmt.Next() {
+				var count int
+				stmt.Scan(&count)
+				if count == 0 {
+					_, err := db.DB.Query("Insert into consulta (medicid, clientid, status, effected,price,day,hourinit, hourend) values($1, $2,$3,$4, $5,$6, $7 ,CAST($7 AS TIME)+interval '25 minutes')", consulta.MedicoID, consulta.ClientID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit)
+					if err != nil {
+						w.WriteHeader(http.StatusBadRequest)
+					}
+
+				} else {
+					w.WriteHeader(http.StatusBadRequest)
+				}
+
+			}
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	}
+}
 func Router() {
 
 	db = new(database.Db)
 	db.OpenDb()
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
+	http.HandleFunc("/consulta", handleConsultasSingup)
 	http.HandleFunc("/consultas/client/", handleConsultasC)
 	http.HandleFunc("/recepcionista/", handleRecepcionista)
 	http.ListenAndServe(":8084", nil)

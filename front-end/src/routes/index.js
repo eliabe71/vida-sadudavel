@@ -17,12 +17,13 @@ export default [
   {
     path: '/paciente/minhasConsultas',
     name: 'PacienteConsultas',
-    component: PacienteMinhasConsultas
-  },
-  {
-    path: '/paciente/minhasConsultas/edit/:id',
-    name: 'pacienteEditarConsulta',
-    component: PacienteEditarConsulta,
-    params: true
+    component: PacienteMinhasConsultas,
+    children: [
+      {
+        path: 'edit/:id',
+        name: 'pacienteEditarConsulta',
+        component: PacienteEditarConsulta,
+      }
+    ]
   }
 ]
