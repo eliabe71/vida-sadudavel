@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/eliabe71/vida-saudavel/back-end/src/database/database"
 	"github.com/eliabe71/vida-saudavel/back-end/src/models"
@@ -123,7 +124,24 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&consulta)
-		utils.BiggerThen("", "2")
+		stmt1, _ := db.DB.Query(`SELECT houred From Medico where crm=$1`, consulta.MedicoID)
+		stmt1.Next()
+		var hourBuffer string
+		stmt1.Scan(&hourBuffer)
+		r, flag := utils.BiggerThen(consulta.HourInit, hourBuffer)
+		if flag {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if strings.Compare(r, consulta.HourEnd) == 0 {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		r, flag = utils.BiggerThen(consulta.HourEnd, hourBuffer)
+		if strings.Compare(r, consulta.HourEnd) == 1 {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and hourinit>=CAST($2 AS TIME) and hourinit < CAST($2 AS TIME) + interval '25 minutes'`, consulta.MedicoID, consulta.HourInit)
 		if err == nil {
 			//and hourinit < time $2 + interval '25 minutes' or hourend < $2 + interval '25 minutes' and hourend >= $2
@@ -146,10 +164,36 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		var consulta models.Medico
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&consulta)
+
+		stmt, err := db.DB.Query(`SELECT Count(*) From Medico Where crm=$1`, consulta.Crm)
+		if err == nil {
+			for stmt.Next() {
+				var count int
+				stmt.Scan(&count)
+				if count == 0 {
+					_, err := db.DB.Query("Insert into Medico (crm, city , state, areaofocupation, name, lastname, hourinit, hourend, price) values($1,$2,$3,$4,$5,$6,$7,$8,$9)", consulta.Crm, consulta.City, consulta.State, consulta.AreaOfOcupation, consulta.Name, consulta.LastName, consulta.HourInit, consulta.HourEnd, consulta.Price)
+					if err != nil {
+						w.WriteHeader(http.StatusBadRequest)
+					}
+				} else {
+					w.WriteHeader(http.StatusBadRequest)
+				}
+			}
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	}
+}
 func Router() {
 
 	db = new(database.Db)
 	db.OpenDb()
+	http.HandleFunc("/medic", handleMedicoSingup)
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
 	http.HandleFunc("/consulta", handleConsultasSingup)
