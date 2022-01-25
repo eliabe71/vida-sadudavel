@@ -11,6 +11,7 @@
           <option v-for="(estado,index) in estados" :key="index">{{estado}}</option>
         </select>
         <input type="text" placeholder="Cidade" v-model="filter.cidade"/>
+        <input type="time" v-model="medicos[0].hourinit">
       </form>
       
       <div>

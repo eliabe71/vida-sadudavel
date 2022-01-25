@@ -53,14 +53,15 @@ func handleConsultasM(w http.ResponseWriter, r *http.Request) {
 		byt := re.FindIndex([]byte(numberS))
 		b := []byte(numberS)
 		numberS = string(b[byt[0]:byt[1]])
-		stmt, err := db.DB.Query("SELECT status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where medicId = $1", numberS)
+		fmt.Println(numberS)
+		stmt, err := db.DB.Query("SELECT status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where medicid = $1", numberS)
 
 		if err == nil {
 			resp := models.Response{}
 			resp.Type = "Consultas"
 			for stmt.Next() {
 				cons := models.Consulta{}
-				stmt.Scan(cons.Status, cons.Effected, cons.MedicoID, cons.ClientID, cons.Day, cons.Price, cons.HourEnd, cons.HourInit)
+				stmt.Scan(&cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Day, &cons.Price, &cons.HourEnd, &cons.HourInit)
 				resp.Data = append(resp.Data, cons)
 			}
 			bJson, _ := json.Marshal(resp)
@@ -89,7 +90,7 @@ func handleConsultasC(w http.ResponseWriter, r *http.Request) {
 			resp.Type = "Consultas"
 			for stmt.Next() {
 				cons := models.Consulta{}
-				stmt.Scan(cons.Status, cons.Effected, cons.MedicoID, cons.ClientID, cons.Day, cons.Price, cons.HourEnd, cons.HourInit)
+				stmt.Scan(&cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Day, &cons.Price, &cons.HourEnd, &cons.HourInit)
 				resp.Data = append(resp.Data, cons)
 			}
 			bJson, _ := json.Marshal(resp)

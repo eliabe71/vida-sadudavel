@@ -9,10 +9,10 @@
               <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
               <div class="card-body">
                 <h5 class="card-title">Consulta</h5>
-                <p class="card-text"><b>Médico:</b> {{c.medico.nome}}</p>
-                <p class="card-text"><b>Data:</b> {{c.data}}</p>
-                <p class="card-text"><b>Horário:</b> {{c.horario}}</p>
-                <p class="card-text"><b>Preço:</b> R$ {{c.preco}},00</p>
+               
+                <p class="card-text"><b>Data:</b> {{c.day.split('T')[0]}}</p>
+                <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
+                <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
               </div>
               <div class="cart-footer">
                 <span class="icon btn-excluir" >
@@ -34,16 +34,17 @@
 <script>
 import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
 import Consultas from '../../services/consultas'
+import Medicos from '../../services/medicos'
 
 export default {
   data(){
     return {
       consultas: [],
-      pacienteLogado: {id: 0}
+      pacienteLogado: {id: 1}
     }
   },
   mounted(){
-    Consultas.listarPorPaciente(this.pacienteLogado.id).then(res => {
+    Consultas.listarPorPaciente().then(res => {
       this.consultas = res.data.Data
     })
   },
@@ -59,8 +60,27 @@ export default {
         }
       }
       return res
+    },
+    searchMedic(id){
+      let res
+      Medicos.listar().then(resposta => {
+        res = resposta.filter(m => {
+          return (m.id === id)
+        })
+      })
+      if(res !== null)
+        return res[0]
+      else
+        return null
+    },
+    formatHour(hour){
+      let res = hour.split('T')
+      res = res[1].split(':')
+      res = res[0]+':'+res[1]
+      return res
     }
   },
+
   components:{
     NavbarPaciente
   }
