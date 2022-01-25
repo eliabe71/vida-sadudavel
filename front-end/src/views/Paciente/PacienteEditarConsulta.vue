@@ -1,5 +1,7 @@
 <template>
   <div id="editarConsulta">
+    <NavbarPaciente/>
+    <h1>Remarcar Consulta</h1>
     <form class="form">
        <div class="mb-3">
         <label for="medicoInput" class="form-label">Médico:</label>
@@ -25,25 +27,46 @@
 </template>
 
 <script>
-  export default {
-    data(){
-      return{
-        consulta: this.$route.params.consulta 
-      }
-    },
+import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
+
+export default {
+  data(){
+    return{
+      consulta: this.$route.params.consulta 
+    }
+  },
+  components:{
+    NavbarPaciente
   }
+}
 </script>
 
 
 <style>
+*{
+  font-family: Arial, Sans-serif, times;
+}
+
+#editarConsulta{
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--primary);
+}
+
+h1{
+  margin-left: 20px;
+  color: #fff;
+
+}
 
 .form{
   width: 50%;
   margin-left: 20px;
-  margin-top: 20px;
+  margin-top: 30px;
   padding: 20px 10px;
   border: 2px solid #aaa;
   border-radius: 8px;
+  background-color: var(--background-default);
 }
 
 .btn-success{
