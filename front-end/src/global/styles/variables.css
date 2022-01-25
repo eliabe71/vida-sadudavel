@@ -1,5 +1,5 @@
 :root{
     --primary: #11a17f;
     --secondary: #11c17f;
-    --background-default: #fff;
+    --background-default: rgb(252, 252, 252);
 }

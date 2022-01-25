@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,9 +16,8 @@
               Mais opções
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><router-link class="dropdown-item" to="/paciente/minhasConsultas">Minhas consultas</router-link></li>
-              <li><router-link class="dropdown-item" to="#">Ver médicos disponíveis</router-link></li>
-              <li><router-link class="dropdown-item" to="#">Meu histórico de consultas</router-link></li>
+              <li><router-link class="dropdown-item" to="/paciente/verMedicos">Ver médicos disponíveis</router-link></li>
+              <li><router-link class="dropdown-item" to="/paciente/historicoConsultas">Meu histórico de consultas</router-link></li>
             </ul>
           </li>
         </ul>
@@ -34,5 +33,7 @@
 <style>
 .navbar{
   margin: 0;
+  font-weight: bold;
+  background-color: var(--secondary);
 }
 </style>
