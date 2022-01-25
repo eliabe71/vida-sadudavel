@@ -33,23 +33,19 @@
 
 <script>
 import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
-
+import Consultas from '../../services/consultas'
 
 export default {
   data(){
     return {
-      consultas: [
-        {id: 0, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '09:00'},
-        {id: 1, preco: 100, data: '2022-03-20', medico: {nome: 'Eliabe'}, horario: '10:00'},
-        {id: 2, preco: 100, data: '2022-03-20', medico: {nome: 'Deigela'}, horario: '8:00PM'},
-        {id: 3, preco: 100, data: '2022-03-20', medico: {nome: 'Danilo'}, horario: '14:00'},
-        {id: 4, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '16:00'},
-        {id: 5, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '5:05'},
-        {id: 6, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '07:30'},
-        {id: 7, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '9:00'},
-        {id: 8, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '15:24'},
-      ],
+      consultas: [],
+      pacienteLogado: {id: 0}
     }
+  },
+  mounted(){
+    Consultas.listarPorPaciente(this.pacienteLogado.id).then(res => {
+      this.consultas = res.data.Data
+    })
   },
   methods: {
     divide(cons){

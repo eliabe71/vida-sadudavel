@@ -133,7 +133,7 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&consulta)
-		stmt1, _ := db.DB.Query(`SELECT houred From Medico where crm=$1`, consulta.MedicoID)
+		stmt1, _ := db.DB.Query(`SELECT hourend From Medico where id=$1`, consulta.MedicoID)
 		stmt1.Next()
 		var hourBuffer string
 		stmt1.Scan(&hourBuffer)
