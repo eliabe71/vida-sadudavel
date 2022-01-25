@@ -201,11 +201,42 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+func handleClientSingup(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "POST" {
+		var consulta models.Cliente
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&consulta)
+
+		stmt, err := db.DB.Query(`SELECT Count(*) From Cliente Where cpf=$1`, consulta.Cpf)
+
+		if err == nil {
+			for stmt.Next() {
+				var count int
+				stmt.Scan(&count)
+
+				fmt.Println(count)
+				if count == 0 {
+					_, err := db.DB.Query("Insert into Cliente (cpf, city , state, name, lastname) values($1,$2,$3,$4,$5)", consulta.Cpf, consulta.City, consulta.State, consulta.Name, consulta.LastName)
+					if err != nil {
+						fmt.Println(err)
+						w.WriteHeader(http.StatusBadRequest)
+					}
+				} else {
+					w.WriteHeader(http.StatusBadRequest)
+				}
+			}
+		} else {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	}
+}
 func Router() {
 
 	db = new(database.Db)
 	db.OpenDb()
-	//http.HandleFunc("/client", handleMedicoSingup)
+	http.HandleFunc("/client", handleClientSingup)
 	http.HandleFunc("/medic", handleMedicoSingup)
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
