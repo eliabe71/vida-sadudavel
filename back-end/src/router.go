@@ -133,6 +133,7 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&consulta)
+		fmt.Println(consulta.MedicoID)
 		stmt1, _ := db.DB.Query(`SELECT hourend From Medico where id=$1`, consulta.MedicoID)
 		stmt1.Next()
 		var hourBuffer string
@@ -154,12 +155,13 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and hourinit>=CAST($2 AS TIME) and hourinit < CAST($2 AS TIME) + interval '25 minutes'`, consulta.MedicoID, consulta.HourInit)
+		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and day = $2 and hourinit>=CAST($3 AS TIME) and hourinit < CAST($3 AS TIME) + interval '25 minutes'`, consulta.MedicoID,consulta.Day, consulta.HourInit)
 		if err == nil {
 			for stmt.Next() {
 				var count int
 				stmt.Scan(&count)
 				if count == 0 {
+					fmt.Println(consulta.ClientID)
 					_, err := db.DB.Query("Insert into Consulta (clientid,medicid, status, effected,price,day,hourinit, hourend) values($1, $2,$3,$4, $5,$6,CAST($7 AS TIME),CAST($8 AS TIME))", consulta.ClientID, consulta.MedicoID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit, consulta.HourEnd)
 					if err != nil {
 						fmt.Println(err)

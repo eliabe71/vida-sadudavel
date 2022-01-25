@@ -1,10 +1,10 @@
 package models
 
 type Consulta struct {
-	Status   bool    `json :"status"`
+	Status   bool    `json:"status"`
 	Effected bool    `json:"effected"`
-	MedicoID int  `json: "medicId"`
-	ClientID int  `json:"clientId"`
+	MedicoID int  	  `json:"medicId"`
+	ClientID int     `json:"clientId"`
 	Id       int     `json:"id"`
 	Price    string  `json:"price"`
 	Day      string  `json:"day"`
