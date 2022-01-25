@@ -12,7 +12,7 @@ type Db struct {
 }
 
 func (db *Db)OpenDb(){
-	connStr := "user=postgres dbname=postgres password=postgres sslmode=disable"
+	connStr := "user=postgres dbname=vidaSaudavel password=147258369a sslmode=disable"
 	data, err := sql.Open("postgres", connStr)
 	db.DB = data
 	if err != nil {

@@ -53,7 +53,7 @@ func handleConsultasM(w http.ResponseWriter, r *http.Request) {
 		byt := re.FindIndex([]byte(numberS))
 		b := []byte(numberS)
 		numberS = string(b[byt[0]:byt[1]])
-		stmt, err := db.DB.Query("SELECT status,effected,medicid,clienteid,day,price,hourend,hourinit From Consulta where medicId = $1", numberS)
+		stmt, err := db.DB.Query("SELECT status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where medicId = $1", numberS)
 
 		if err == nil {
 			resp := models.Response{}
@@ -82,7 +82,7 @@ func handleConsultasC(w http.ResponseWriter, r *http.Request) {
 		byt := re.FindIndex([]byte(numberS))
 		b := []byte(numberS)
 		numberS = string(b[byt[0]:byt[1]])
-		stmt, err := db.DB.Query("SELECT status,effected,medicid,clienteid,day,price,hourend,hourinit From Consulta where clienteId = $1", numberS)
+		stmt, err := db.DB.Query("SELECT status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where clientId = $1", numberS)
 
 		if err == nil {
 			resp := models.Response{}
@@ -139,15 +139,18 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 		stmt1.Scan(&hourBuffer)
 		r, flag := utils.BiggerThen(consulta.HourInit, hourBuffer)
 		if flag {
+			fmt.Println("Op1")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		if strings.Compare(r, consulta.HourEnd) == 0 {
+			fmt.Println("Op2")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		r, flag = utils.BiggerThen(consulta.HourEnd, hourBuffer)
 		if strings.Compare(r, consulta.HourEnd) == 1 {
+			fmt.Println("Op3")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -157,15 +160,18 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 				var count int
 				stmt.Scan(&count)
 				if count == 0 {
-					_, err := db.DB.Query("Insert into consulta (medicid, clientid, status, effected,price,day,hourinit, hourend) values($1, $2,$3,$4, $5,$6, $7 ,CAST($7 AS TIME)+interval '25 minutes')", consulta.MedicoID, consulta.ClientID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit)
+					_, err := db.DB.Query("Insert into Consulta (clientid,medicid, status, effected,price,day,hourinit, hourend) values($1, $2,$3,$4, $5,$6,CAST($7 AS TIME),CAST($8 AS TIME))", consulta.ClientID, consulta.MedicoID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit, consulta.HourEnd)
 					if err != nil {
+						fmt.Println(err)
 						w.WriteHeader(http.StatusBadRequest)
 					}
 				} else {
+					fmt.Println("Op5")
 					w.WriteHeader(http.StatusBadRequest)
 				}
 			}
 		} else {
+			fmt.Println("Op6")
 			w.WriteHeader(http.StatusBadRequest)
 		}
 	}
@@ -177,7 +183,7 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&consulta)
 		fmt.Println("Aqui " + consulta.Crm)
-		stmt, err := db.DB.Query(`SELECT Count(*) From Medico Where crm=$1`, consulta.Crm)
+		stmt, err := db.DB.Query(`SELECT Count(*) From Medico Where id=$1`, consulta.Id)
 
 		if err == nil {
 			for stmt.Next() {
@@ -201,42 +207,11 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-func handleClientSingup(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
-	if r.Method == "POST" {
-		var consulta models.Cliente
-		dec := json.NewDecoder(r.Body)
-		dec.Decode(&consulta)
-
-		stmt, err := db.DB.Query(`SELECT Count(*) From Cliente Where cpf=$1`, consulta.Cpf)
-
-		if err == nil {
-			for stmt.Next() {
-				var count int
-				stmt.Scan(&count)
-
-				fmt.Println(count)
-				if count == 0 {
-					_, err := db.DB.Query("Insert into Cliente (cpf, city , state, name, lastname) values($1,$2,$3,$4,$5)", consulta.Cpf, consulta.City, consulta.State, consulta.Name, consulta.LastName)
-					if err != nil {
-						fmt.Println(err)
-						w.WriteHeader(http.StatusBadRequest)
-					}
-				} else {
-					w.WriteHeader(http.StatusBadRequest)
-				}
-			}
-		} else {
-			fmt.Println(err)
-			w.WriteHeader(http.StatusBadRequest)
-		}
-	}
-}
 func Router() {
 
 	db = new(database.Db)
 	db.OpenDb()
-	http.HandleFunc("/client", handleClientSingup)
+	//http.HandleFunc("/client", handleMedicoSingup)
 	http.HandleFunc("/medic", handleMedicoSingup)
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
