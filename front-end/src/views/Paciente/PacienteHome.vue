@@ -62,7 +62,6 @@ export default {
           aux = []
         }
       }
-      console.log(res)
       return res
     }
   },
