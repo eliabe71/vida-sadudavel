@@ -15,7 +15,12 @@ import (
 
 var db *database.Db
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func handleMedics(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == "GET" {
 		stmt, err := db.DB.Query("SELECT name, lastname, city, state,crm,areaofocupation,hourend,hourinit,price From Medico")
 		if err != nil {
@@ -38,6 +43,7 @@ func handleMedics(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleConsultasM(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	fmt.Println(r.URL.Path)
 	re := regexp.MustCompile(`\/[a-z]+\/[a-z]+\/[0-9]+$`)
 	if re.MatchString(r.URL.Path) {
@@ -66,6 +72,7 @@ func handleConsultasM(w http.ResponseWriter, r *http.Request) {
 
 }
 func handleConsultasC(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	fmt.Println(r.URL.Path)
 	re := regexp.MustCompile(`\/[a-z]+\/[a-z]+\/[0-9]+$`)
 	if re.MatchString(r.URL.Path) {
@@ -93,6 +100,7 @@ func handleConsultasC(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func handleRecepcionista(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	fmt.Println(r.URL.Path)
 	re := regexp.MustCompile(`\/[a-z]+\/[0-9]+$`)
 	if re.MatchString(r.URL.Path) {
@@ -120,6 +128,7 @@ func handleRecepcionista(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == "POST" {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
@@ -162,6 +171,7 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method == "POST" {
 		var consulta models.Medico
 		dec := json.NewDecoder(r.Body)
