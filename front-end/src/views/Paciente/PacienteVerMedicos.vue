@@ -11,7 +11,6 @@
           <option v-for="(estado,index) in estados" :key="index">{{estado}}</option>
         </select>
         <input type="text" placeholder="Cidade" v-model="filter.cidade"/>
-        <input type="time" v-model="medicos[0].hourinit">
       </form>
       
       <div>
@@ -40,7 +39,7 @@ export default {
       medicos: [],
 
       filter: {
-        especialidade:'Ortopedia',
+        especialidade: null,
         estado: null,
         cidade: null
         },
@@ -50,7 +49,7 @@ export default {
   },
   mounted(){
     Medico.listar().then(res => {
-      this.medicos = res.data.Data
+      this.medicos = res.data.Data !== null ? res.data.Data : []
     })
   },
   components:{
@@ -62,17 +61,17 @@ export default {
         if(this.filter.especialidade !== null && this.filter.especialidade !== undefined)
           return ( e.areaOfOcupation.toLowerCase() === this.filter.especialidade.toLowerCase() )
         else
-          return true
+          return false
       }).filter(e => {
         if(this.filter.estado !== null && this.filter.estado !== undefined)
           return ( e.state.toLowerCase() === this.filter.estado.toLowerCase() )
         else
-          return true
+          return false
       }).filter(e => {
         if(this.filter.cidade !== null && this.filter.cidade !== undefined && this.filter.cidade !== '' )
           return ( e.city.toLowerCase().includes(this.filter.cidade.toLowerCase()) )
         else
-          return true
+          return false
       })
       return res
     }
