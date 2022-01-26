@@ -11,7 +11,7 @@
                 <div class="card-body">
                   <h4 class="card-title">Consulta</h4>
                   <p class="card-text"><b>Médico:</b>{{c.medicName}}</p>
-                  <p class="card-text"><b>Local:</b> </p>
+                  <p class="card-text"><b>Local:</b>{{c.city+'-'+c.state}} </p>
                   <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
                   <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
                   <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>

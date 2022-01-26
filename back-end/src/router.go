@@ -84,7 +84,7 @@ func handleConsultasC(w http.ResponseWriter, r *http.Request) {
 		byt := re.FindIndex([]byte(numberS))
 		b := []byte(numberS)
 		numberS = string(b[byt[0]:byt[1]])
-		stmt, err := db.DB.Query("SELECT id,status,effected,medicid,clientid,medicName,clientName,state, city,day,price,hourend,hourinit From Consulta where clientId = $1", numberS)
+		stmt, err := db.DB.Query("SELECT id,status,effected,medicid,clientid,medicname,clientname,state, city,day,price,hourend,hourinit From Consulta where clientId = $1", numberS)
 
 		if err == nil {
 			resp := models.Response{}
@@ -293,7 +293,7 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 				stmt.Scan(&count)
 				if count == 0 {
 					fmt.Println(consulta.ClientID)
-					_, err := db.DB.Query("Insert into Consulta (clientid,medicid,medicName,clientName,state,city,status, effected,price,day,hourinit, hourend) values($1,$2,select name from medico where id = $2, select name from cliente where id=$1,select state from medico where id=$2,select city from medico where id=$2,$3,$4, $5,$6,CAST($7 AS TIME),CAST($8 AS TIME))", consulta.ClientID, consulta.MedicoID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit, consulta.HourEnd)
+					_, err := db.DB.Query("Insert into Consulta (clientid,medicid,medicName,clientName,state,city,status, effected,price,day,hourinit, hourend) values($1,$2,(select name from medico where id = $2), (select (name||' '||lastname) from cliente where id=$1),(select state from medico where id=$2),(select city from medico where id=$2),$3,$4, $5,$6,CAST($7 AS TIME),CAST($8 AS TIME))", consulta.ClientID, consulta.MedicoID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit, consulta.HourEnd)
 					if err != nil {
 						fmt.Println(err)
 						w.WriteHeader(http.StatusBadRequest)
