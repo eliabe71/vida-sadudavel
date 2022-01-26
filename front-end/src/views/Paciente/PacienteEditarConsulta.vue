@@ -5,22 +5,22 @@
     <form class="form">
        <div class="mb-3">
         <label for="medicoInput" class="form-label">Médico:</label>
-        <input type="text" class="form-control" id="medicoInput" v-model="consulta.medico.nome" disabled/>
+        <input type="text" class="form-control" id="medicoInput" disabled/>
       </div>
       <div class="mb-3">
         <label for="dataInput" class="form-label">Data:</label>
-        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.data" />
+        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.day" />
       </div>
       <div class="mb-3">
         <label for="horarioInput" class="form-label">Horário:</label>
-        <input type="time" class="form-control" id="horarioInput" v-model="consulta.horario" />
+        <input type="time" class="form-control" id="horarioInput" v-model="consulta.hourInit" />
       </div>
       <div class="mb-3">
         <label for="precoInput" class="form-label">Preço:</label>
-        <input type="text" class="form-control" id="precoInput" v-model="consulta.preco" disabled />
+        <input type="text" class="form-control" id="precoInput" v-model="consulta.price" disabled />
       </div>
       <button class="btn-success">Atualizar</button>
-      <button class="btn-warning">Voltar</button>
+      <router-link class="btn-voltar" to="/pacienteHome"><button  class="btn-warning">Voltar</button></router-link>
     </form>
    
   </div>
@@ -32,11 +32,34 @@ import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
 export default {
   data(){
     return{
-      consulta: this.$route.params.consulta 
+      consulta: {
+        id: this.$route.params.consulta.id,
+        status: this.$route.params.consulta.status,
+        effected:  this.$route.params.consulta.effected,
+        medicId:  this.$route.params.consulta.medicId,
+        clienteId:  this.$route.params.consulta.clienteId,
+        price:  this.$route.params.consulta.price,
+        day:  this.formatDate(this.$route.params.consulta.day),
+        hourInit: this.formatHour(this.$route.params.consulta.hourInit),
+        hourEnd: this.formatHour(this.$route.params.consulta.hourEnd)
+      }
     }
   },
   components:{
     NavbarPaciente
+  },
+  methods:{
+    formatDate(d){
+      let res = d.split('T')
+
+      return res[0]
+    },
+     formatHour(hour){
+      let res = hour.split('T')
+      res = res[1].split(':')
+      res = res[0]+':'+res[1]
+      return res
+    }
   }
 }
 </script>
@@ -73,12 +96,19 @@ h1{
   width: 40%;
   height: 40px;
   border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-voltar{
+  color: #fff;
 }
 
 .btn-warning{
   width: 40%;
   height: 40px;
   border-radius: 6px;
+  color: #fff !important;
+  font-weight: bold;
   float: right;
 }
 

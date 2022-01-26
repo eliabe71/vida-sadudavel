@@ -1,8 +1,8 @@
 import { api } from './config'
 
 export default {
-    listarPorPaciente:() => {
-        return api.get('consultas/client/1')
+    listarPorPaciente:(clientId) => {
+        return api.get(`consultas/client/${clientId}`)
     },
 
     listarPorMedico:(medicoId) => {

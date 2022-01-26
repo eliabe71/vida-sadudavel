@@ -8,9 +8,9 @@
             <div class="card">
               <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
               <div class="card-body">
-                <h5 class="card-title">Consulta</h5>
-               
-                <p class="card-text"><b>Data:</b> {{c.day.split('T')[0]}}</p>
+                <h4 class="card-title">Consulta</h4>
+                <p class="card-text"><b>Médico:</b> </p>
+                <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
                 <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
                 <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
               </div>
@@ -44,8 +44,10 @@ export default {
     }
   },
   mounted(){
-    Consultas.listarPorPaciente().then(res => {
-      this.consultas = res.data.Data
+    Consultas.listarPorPaciente(this.pacienteLogado.id).then(res => {
+      this.consultas = res.data.Data.filter(c => {
+        return (c.status === true && c.effected === false)
+      })
     })
   },
   methods: {
@@ -62,16 +64,20 @@ export default {
       return res
     },
     searchMedic(id){
-      let res
-      Medicos.listar().then(resposta => {
-        res = resposta.filter(m => {
-          return (m.id === id)
-        })
+      let res 
+      Medicos.listar().then(resp => {
+         res = resp.data.Data.filter(m => {
+           return (m.id === id)
+         })
       })
-      if(res !== null)
-        return res[0]
-      else
-        return null
+      console.log(res[0])
+      return res[0]
+    },
+    formatDate(d){
+      let res = d.split('T')
+      res = res[0].split('-')
+      res = res[2]+'/'+res[1]+'/'+res[0]
+      return res
     },
     formatHour(hour){
       let res = hour.split('T')
