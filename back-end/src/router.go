@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/eliabe71/vida-saudavel/back-end/src/database/database"
@@ -100,9 +101,91 @@ func handleConsultasC(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 }
+
+func handlegetClient(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "GET" {
+		re := regexp.MustCompile(`\/[a-z]+\/[0-9]+$`)
+		fmt.Println(r.URL.Path)
+		if re.MatchString(r.URL.Path) {
+			re = regexp.MustCompile(`\/[a-z]+\/`)
+			numberS := re.Split(r.URL.Path, 2)[1]
+			re = regexp.MustCompile(`[0-9]+`)
+			byt := re.FindIndex([]byte(numberS))
+			b := []byte(numberS)
+			numberS = string(b[byt[0]:byt[1]])
+			i, err := strconv.Atoi(numberS)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			stmt, errDb := db.DB.Query("SELECT name ,lastname ,cpf ,city ,state From cliente where id = $1", i)
+			if errDb != nil {
+				fmt.Println(errDb)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			resp := models.Response{}
+			for stmt.Next() {
+				cons := models.Cliente{}
+				stmt.Scan(&cons.Name, &cons.LastName, &cons.Cpf, &cons.City, &cons.State)
+				cons.Id = i
+				resp.Type = "Cliente"
+				resp.Data = append(resp.Data, cons)
+			}
+			bJson, _ := json.Marshal(resp)
+			w.Write(bJson)
+		} else {
+
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+	}
+}
+
+func handlegetMedic(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "GET" {
+		re := regexp.MustCompile(`\/[a-z]+\/[0-9]+$`)
+		fmt.Println(r.URL.Path)
+		if re.MatchString(r.URL.Path) {
+			re = regexp.MustCompile(`\/[a-z]+\/`)
+			numberS := re.Split(r.URL.Path, 2)[1]
+			re = regexp.MustCompile(`[0-9]+`)
+			byt := re.FindIndex([]byte(numberS))
+			b := []byte(numberS)
+			numberS = string(b[byt[0]:byt[1]])
+			i, err := strconv.Atoi(numberS)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			stmt, errDb := db.DB.Query("SELECT name,lastname, crm , hourend, hourinit,city,state,price, areaofocupation  From medico where id = $1", i)
+			if errDb != nil {
+				fmt.Println(errDb)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			resp := models.Response{}
+			for stmt.Next() {
+				cons := models.Medico{}
+				cons.Id = i
+				stmt.Scan(&cons.Name, &cons.LastName, &cons.Crm, &cons.HourEnd, &cons.HourInit, &cons.City, &cons.State, &cons.Price, &cons.AreaOfOcupation)
+				resp.Data = append(resp.Data, cons)
+
+			}
+			bJson, _ := json.Marshal(resp)
+			w.Write(bJson)
+		} else {
+
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+	}
+}
+
 func handleRecepcionista(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	fmt.Println(r.URL.Path)
 	re := regexp.MustCompile(`\/[a-z]+\/[0-9]+$`)
 	if re.MatchString(r.URL.Path) {
 		re = regexp.MustCompile(`\/[a-z]+\/`)
@@ -156,7 +239,7 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and day = $2 and hourinit>=CAST($3 AS TIME) and hourinit < CAST($3 AS TIME) + interval '25 minutes'`, consulta.MedicoID,consulta.Day, consulta.HourInit)
+		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and day = $2 and hourinit>=CAST($3 AS TIME) and hourinit < CAST($3 AS TIME) + interval '25 minutes'`, consulta.MedicoID, consulta.Day, consulta.HourInit)
 		if err == nil {
 			for stmt.Next() {
 				var count int
@@ -210,12 +293,47 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func handleClienteSingup(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "POST" {
+		var consulta models.Cliente
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&consulta)
+		stmt, err := db.DB.Query(`SELECT Count(*) From Medico Where id=$1`, consulta.Id)
+
+		if err == nil {
+			for stmt.Next() {
+				var count int
+				stmt.Scan(&count)
+
+				fmt.Println(count)
+				if count == 0 {
+					_, err := db.DB.Query("Insert into Cliente (cpf, city , state, name, lastname) values($1,$2,$3,$4,$5)", &consulta.Cpf, &consulta.City, &consulta.State, &consulta.Name, &consulta.LastName)
+					if err != nil {
+						fmt.Println(err)
+						w.WriteHeader(http.StatusBadRequest)
+					}
+				} else {
+					fmt.Println(err)
+					w.WriteHeader(http.StatusBadRequest)
+				}
+			}
+		} else {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	}
+}
+
 func Router() {
 
 	db = new(database.Db)
 	db.OpenDb()
-	//http.HandleFunc("/client", handleMedicoSingup)
+	http.HandleFunc("/client", handleClienteSingup)
 	http.HandleFunc("/medic", handleMedicoSingup)
+	http.HandleFunc("/getmedic/", handlegetMedic)
+	http.HandleFunc("/getclient/", handlegetClient)
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
 	http.HandleFunc("/consulta", handleConsultasSingup)
