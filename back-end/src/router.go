@@ -169,6 +169,7 @@ func handlegetMedic(w http.ResponseWriter, r *http.Request) {
 			resp := models.Response{}
 			for stmt.Next() {
 				cons := models.Medico{}
+				cons.Id = i
 				stmt.Scan(&cons.Name, &cons.LastName, &cons.Crm, &cons.HourEnd, &cons.HourInit, &cons.City, &cons.State, &cons.Price, &cons.AreaOfOcupation)
 				resp.Data = append(resp.Data, cons)
 
