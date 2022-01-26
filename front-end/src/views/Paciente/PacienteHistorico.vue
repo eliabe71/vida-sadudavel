@@ -10,9 +10,10 @@
                 <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
                 <div class="card-body">
                 <h5 class="card-title">Consulta</h5>
-                <p class="card-text"><b>Médico:</b> </p>
-                <p class="card-text"><b>Data:</b> {{c.day}}</p>
-                <p class="card-text"><b>Horário:</b> {{c.hourInit}}</p>
+                <p class="card-text"><b>Médico:</b> {{c.medicName}} </p>
+                <p class="card-text"><b>Local:</b> {{c.city+'-'+c.state}} </p>
+                <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
+                <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
                 <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
                 </div>
                 <div class="cart-footer">
@@ -30,12 +31,21 @@
 
 <script>
 import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
+import Consultas from '../../services/consultas'
 
 export default {
   data(){
     return {
-      consultas: []
+      consultas: [],
+      pacienteLogado: {id:1}
     }
+  },
+  mounted(){
+    Consultas.listarPorPaciente(this.pacienteLogado.id).then(res => {
+      this.consultas = res.data.Data.filter(c => {
+        return (c.effected === true)
+      })
+    })
   },
   methods: {
     divide(cons){
@@ -49,6 +59,18 @@ export default {
         }
       }
       console.log(res)
+      return res
+    },
+    formatDate(d){
+      let res = d.split('T')
+      res = res[0].split('-')
+      res = res[2]+'/'+res[1]+'/'+res[0]
+      return res
+    },
+    formatHour(hour){
+      let res = hour.split('T')
+      res = res[1].split(':')
+      res = res[0]+':'+res[1]
       return res
     }
   },

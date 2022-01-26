@@ -7,5 +7,8 @@ export default {
 
     listarPorMedico:(medicoId) => {
         return api.get(`consultas/medic/${medicoId}`)
+    },
+    excluir:(id)=>{
+        return api.get(`removeconsulta/${id}`)
     }
 }

@@ -10,8 +10,8 @@
                 <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
                 <div class="card-body">
                   <h4 class="card-title">Consulta</h4>
-                  <p class="card-text"><b>Médico:</b>{{c.medicName}}</p>
-                  <p class="card-text"><b>Local:</b>{{c.city+'-'+c.state}} </p>
+                  <p class="card-text"><b>Médico:</b> {{c.medicName}}</p>
+                  <p class="card-text"><b>Local:</b> {{c.city+'-'+c.state}} </p>
                   <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
                   <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
                   <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
@@ -24,28 +24,29 @@
                     <font-awesome-icon :icon="['fas', 'edit']" />
                   </router-link>
                 </div>
+                <div class="modal fade" id="confimationModal" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="confimationModalLabel">Excluir consulta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Deseja realmente excluir a consulta?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" v-on:click="excluirConsulta(c.id)" class="btn btn-danger">Excluir {{c.id}}</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </td>
           </tr>
         </table>
     </div>
-      <div class="modal fade" id="confimationModal" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="confimationModalLabel">Excluir consulta</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p>Deseja realmente excluir a consulta?</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-danger">Excluir</button>
-            </div>
-          </div>
-        </div>
-      </div>
+    
     </div>
 </template>
 
@@ -92,8 +93,13 @@ export default {
       res = res[1].split(':')
       res = res[0]+':'+res[1]
       return res
+    },
+    excluirConsulta(id){
+      Consultas.excluir(id)
     }
   },
+
+  
 
   components:{
     NavbarPaciente

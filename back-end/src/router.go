@@ -160,7 +160,7 @@ func handleRemoveConsulta(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			stmt, errDb := db.DB.Query("SELECT status, effected, medicid, clienteid, price, day, hourend, hourinit From consulta where id = $1", i)
+			stmt, errDb := db.DB.Query("SELECT status, effected, medicid, clientid, price, day, hourend, hourinit From consulta where id = $1", i)
 			if errDb != nil {
 				fmt.Println(errDb)
 				w.WriteHeader(http.StatusBadRequest)
@@ -175,7 +175,7 @@ func handleRemoveConsulta(w http.ResponseWriter, r *http.Request) {
 				stmt.Scan(&cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Price, &cons.Day, &cons.HourEnd, &cons.HourInit)
 				resp.Type = "Consulta Deletada"
 				resp.Data = append(resp.Data, cons)
-				_, errDb := db.DB.Query("Delete from consulta o where id = $1", i)
+				_, errDb := db.DB.Query("Delete from consulta where id = $1", i)
 				if errDb != nil {
 					fmt.Println(errDb)
 					w.WriteHeader(http.StatusBadRequest)
