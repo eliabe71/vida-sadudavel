@@ -10,7 +10,9 @@
                 <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
                 <div class="card-body">
                   <h4 class="card-title">Consulta</h4>
-                  <p class="card-text"><b>Médico:</b>{{searchMedic(c.medicId)}} </p>
+                  <p class="card-text"><b>Médico:</b>
+                  {{ searchMedic(c.medicId)}} 
+                  </p>
                   <p class="card-text"><b>Local:</b> </p>
                   <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
                   <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
@@ -82,15 +84,14 @@ export default {
       return res
     },
     async searchMedic(id){
-      try{
-        const res = await Medicos.getMedico(id)
-         
-        console.log(res.data.Data[0])
-        return res.data.Data[0];
-      }catch(error){
-        return error
-      }
+
+      return await Medicos.getMedico(id).then(r => {
+        console.log(r.data.Data[0])
+        return r.data.Data[0]
+      })
+        
     },
+  
     formatDate(d){
       let res = d.split('T')
       res = res[0].split('-')
