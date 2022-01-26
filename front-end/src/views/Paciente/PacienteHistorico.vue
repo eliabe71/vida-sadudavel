@@ -1,6 +1,7 @@
 <template>
   <div id="pacienteHistoricoConsultas">
     <NavbarPaciente/>
+    <h2 class="title">Meu histórico de Consultas</h2>
     <div class="bloco-consultas">
         <table>
           <tr v-for="(cons,index) in divide(consultas)" :key="index">
@@ -9,10 +10,10 @@
                 <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
                 <div class="card-body">
                 <h5 class="card-title">Consulta</h5>
-                <p class="card-text"><b>Médico:</b> {{c.medico.nome}}</p>
-                <p class="card-text"><b>Data:</b> {{c.data}}</p>
-                <p class="card-text"><b>Horário:</b> {{c.horario}}</p>
-                <p class="card-text"><b>Preço:</b> R$ {{c.preco}},00</p>
+                <p class="card-text"><b>Médico:</b> </p>
+                <p class="card-text"><b>Data:</b> {{c.day}}</p>
+                <p class="card-text"><b>Horário:</b> {{c.hourInit}}</p>
+                <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
                 </div>
                 <div class="cart-footer">
                   <span class="icon btn-excluir" >
@@ -33,17 +34,7 @@ import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
 export default {
   data(){
     return {
-      consultas: [
-        {id: 0, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '09:00'},
-        {id: 1, preco: 100, data: '2022-03-20', medico: {nome: 'Eliabe'}, horario: '10:00'},
-        {id: 2, preco: 100, data: '2022-03-20', medico: {nome: 'Deigela'}, horario: '8:00'},
-        {id: 3, preco: 100, data: '2022-03-20', medico: {nome: 'Danilo'}, horario: '14:00'},
-        {id: 4, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '16:00'},
-        {id: 5, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '05:05'},
-        {id: 6, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '07:30'},
-        {id: 7, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '09:00'},
-        {id: 8, preco: 100, data: '2022-03-20', medico: {nome: 'Anderson'}, horario: '15:24'},
-      ],
+      consultas: []
     }
   },
   methods: {
@@ -68,9 +59,23 @@ export default {
 </script>
 
 <style>
-
 *{
   font-family: Arial, Sans-serif, times;
+}
+
+#pacienteHistoricoConsultas{
+  width: 100vw;
+  height: 100vh;
+  background-color:  var(--primary);
+}
+
+.title{
+  color: #fff;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-bottom: 0;
+  font-size: 25pt;
+  font-weight: bold;
 }
 
 .bloco-consultas{

@@ -1,33 +1,51 @@
 <template>
     <div id="pacienteHome">
       <NavbarPaciente/>
+      <h2 class="title">Minhas Consultas</h2>
       <div class="bloco-consultas">
-      <table>
-        <tr v-for="(cons,index) in divide(consultas)" :key="index">
-          <td v-for="c in cons" :key="c.id">
-            <div class="card">
-              <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
-              <div class="card-body">
-                <h4 class="card-title">Consulta</h4>
-                <p class="card-text"><b>Médico:</b> </p>
-                <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
-                <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
-                <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
+        <table>
+          <tr v-for="(cons,index) in divide(consultas)" :key="index">
+            <td v-for="c in cons" :key="c.id">
+              <div class="card">
+                <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
+                <div class="card-body">
+                  <h4 class="card-title">Consulta</h4>
+                  <p class="card-text"><b>Médico:</b>{{searchMedic(c.medicId)}} </p>
+                  <p class="card-text"><b>Local:</b> </p>
+                  <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
+                  <p class="card-text"><b>Horário:</b> {{formatHour(c.hourInit)}}</p>
+                  <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
+                </div>
+                <div class="cart-footer">
+                  <span class="icon btn-excluir" data-bs-toggle="modal" data-bs-target="#confimationModal">
+                    <font-awesome-icon :icon="['fas', 'trash-alt']" />
+                  </span>
+                  <router-link class="icon btn-editar" :to="{name: 'pacienteEditarConsulta',  params:{id:c.id, consulta:c} }">
+                    <font-awesome-icon :icon="['fas', 'edit']" />
+                  </router-link>
+                </div>
               </div>
-              <div class="cart-footer">
-                <span class="icon btn-excluir" >
-                  <font-awesome-icon :icon="['fas', 'trash-alt']" />
-                </span>
-                <router-link class="icon btn-editar" :to="{name: 'pacienteEditarConsulta',  params:{id:c.id, consulta:c} }">
-                  <font-awesome-icon :icon="['fas', 'edit']" />
-                </router-link>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </table>
+            </td>
+          </tr>
+        </table>
     </div>
-        
+      <div class="modal fade" id="confimationModal" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confimationModalLabel">Excluir consulta</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Deseja realmente excluir a consulta?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger">Excluir</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -40,7 +58,7 @@ export default {
   data(){
     return {
       consultas: [],
-      pacienteLogado: {id: 1}
+      pacienteLogado: {id: 1},
     }
   },
   mounted(){
@@ -63,15 +81,15 @@ export default {
       }
       return res
     },
-    searchMedic(id){
-      let res 
-      Medicos.listar().then(resp => {
-         res = resp.data.Data.filter(m => {
-           return (m.id === id)
-         })
-      })
-      console.log(res[0])
-      return res[0]
+    async searchMedic(id){
+      try{
+        const res = await Medicos.getMedico(id)
+         
+        console.log(res.data.Data[0])
+        return res.data.Data[0];
+      }catch(error){
+        return error
+      }
     },
     formatDate(d){
       let res = d.split('T')
@@ -102,6 +120,15 @@ export default {
   width: 100vw;
   height: 100vh;
   background-color:  var(--primary);
+}
+
+.title{
+  color: #fff;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-bottom: 0;
+  font-size: 25pt;
+  font-weight: bold;
 }
 
 .bloco-consultas{
@@ -139,6 +166,7 @@ export default {
 
 .card-title{
   font-size: 2vw;
+  font-weight: bold;
   margin-bottom: 0.1vw;
   margin-top: 0;
 }
@@ -159,6 +187,7 @@ export default {
 .icon {
   margin-left: 10px;
   margin-right: 10px;
+  font-size: 20pt;
 }
 
 .icon:hover{
