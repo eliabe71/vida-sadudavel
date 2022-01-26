@@ -23,7 +23,7 @@ func enableCors(w *http.ResponseWriter) {
 func handleMedics(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if r.Method == "GET" {
-		stmt, err := db.DB.Query("SELECT name, lastname, city, state,crm,areaofocupation,hourend,hourinit,price From Medico")
+		stmt, err := db.DB.Query("SELECT id,name, lastname, city, state,crm,areaofocupation,hourend,hourinit,price From Medico")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -31,7 +31,7 @@ func handleMedics(w http.ResponseWriter, r *http.Request) {
 		resp.Type = "Medics"
 		for stmt.Next() {
 			medics := models.Medico{}
-			stmt.Scan(&medics.Name, &medics.LastName, &medics.City, &medics.State, &medics.Crm, &medics.AreaOfOcupation, &medics.HourEnd, &medics.HourInit, &medics.Price)
+			stmt.Scan(&medics.Id, &medics.Name, &medics.LastName, &medics.City, &medics.State, &medics.Crm, &medics.AreaOfOcupation, &medics.HourEnd, &medics.HourInit, &medics.Price)
 			resp.Data = append(resp.Data, medics)
 		}
 
@@ -55,14 +55,14 @@ func handleConsultasM(w http.ResponseWriter, r *http.Request) {
 		b := []byte(numberS)
 		numberS = string(b[byt[0]:byt[1]])
 		fmt.Println(numberS)
-		stmt, err := db.DB.Query("SELECT status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where medicid = $1", numberS)
+		stmt, err := db.DB.Query("SELECT id,status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where medicid = $1", numberS)
 
 		if err == nil {
 			resp := models.Response{}
 			resp.Type = "Consultas"
 			for stmt.Next() {
 				cons := models.Consulta{}
-				stmt.Scan(&cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Day, &cons.Price, &cons.HourEnd, &cons.HourInit)
+				stmt.Scan(&cons.Id, &cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Day, &cons.Price, &cons.HourEnd, &cons.HourInit)
 				resp.Data = append(resp.Data, cons)
 			}
 			bJson, _ := json.Marshal(resp)
@@ -84,14 +84,14 @@ func handleConsultasC(w http.ResponseWriter, r *http.Request) {
 		byt := re.FindIndex([]byte(numberS))
 		b := []byte(numberS)
 		numberS = string(b[byt[0]:byt[1]])
-		stmt, err := db.DB.Query("SELECT status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where clientId = $1", numberS)
+		stmt, err := db.DB.Query("SELECT id,status,effected,medicid,clientid,day,price,hourend,hourinit From Consulta where clientId = $1", numberS)
 
 		if err == nil {
 			resp := models.Response{}
 			resp.Type = "Consultas"
 			for stmt.Next() {
 				cons := models.Consulta{}
-				stmt.Scan(&cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Day, &cons.Price, &cons.HourEnd, &cons.HourInit)
+				stmt.Scan(&cons.Id, &cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Day, &cons.Price, &cons.HourEnd, &cons.HourInit)
 				resp.Data = append(resp.Data, cons)
 			}
 			bJson, _ := json.Marshal(resp)
@@ -119,7 +119,7 @@ func handlegetClient(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			stmt, errDb := db.DB.Query("SELECT name ,lastname ,cpf ,city ,state From cliente where id = $1", i)
+			stmt, errDb := db.DB.Query("SELECT id,name ,lastname ,cpf ,city ,state From cliente where id = $1", i)
 			if errDb != nil {
 				fmt.Println(errDb)
 				w.WriteHeader(http.StatusBadRequest)
@@ -128,7 +128,7 @@ func handlegetClient(w http.ResponseWriter, r *http.Request) {
 			resp := models.Response{}
 			for stmt.Next() {
 				cons := models.Cliente{}
-				stmt.Scan(&cons.Name, &cons.LastName, &cons.Cpf, &cons.City, &cons.State)
+				stmt.Scan(&cons.Id, &cons.Name, &cons.LastName, &cons.Cpf, &cons.City, &cons.State)
 				cons.Id = i
 				resp.Type = "Cliente"
 				resp.Data = append(resp.Data, cons)
@@ -160,7 +160,7 @@ func handlegetMedic(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			stmt, errDb := db.DB.Query("SELECT name,lastname, crm , hourend, hourinit,city,state,price, areaofocupation  From medico where id = $1", i)
+			stmt, errDb := db.DB.Query("SELECT id,name,lastname, crm , hourend, hourinit,city,state,price, areaofocupation  From medico where id = $1", i)
 			if errDb != nil {
 				fmt.Println(errDb)
 				w.WriteHeader(http.StatusBadRequest)
@@ -170,7 +170,7 @@ func handlegetMedic(w http.ResponseWriter, r *http.Request) {
 			for stmt.Next() {
 				cons := models.Medico{}
 				cons.Id = i
-				stmt.Scan(&cons.Name, &cons.LastName, &cons.Crm, &cons.HourEnd, &cons.HourInit, &cons.City, &cons.State, &cons.Price, &cons.AreaOfOcupation)
+				stmt.Scan(&cons.Id,&cons.Name, &cons.LastName, &cons.Crm, &cons.HourEnd, &cons.HourInit, &cons.City, &cons.State, &cons.Price, &cons.AreaOfOcupation)
 				resp.Data = append(resp.Data, cons)
 
 			}
