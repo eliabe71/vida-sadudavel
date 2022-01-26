@@ -143,6 +143,53 @@ func handlegetClient(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleRemoveConsulta(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "GET" {
+		re := regexp.MustCompile(`\/[a-z]+\/[0-9]+$`)
+		fmt.Println(r.URL.Path)
+		if re.MatchString(r.URL.Path) {
+			re = regexp.MustCompile(`\/[a-z]+\/`)
+			numberS := re.Split(r.URL.Path, 2)[1]
+			re = regexp.MustCompile(`[0-9]+`)
+			byt := re.FindIndex([]byte(numberS))
+			b := []byte(numberS)
+			numberS = string(b[byt[0]:byt[1]])
+			i, err := strconv.Atoi(numberS)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			stmt, errDb := db.DB.Query("SELECT status, effected, medicid, clienteid, price, day, hourend, hourinit From consulta where id = $1", i)
+			if errDb != nil {
+				fmt.Println(errDb)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			resp := models.Response{}
+			row := 0
+			for stmt.Next() {
+				row++
+				cons := models.Consulta{}
+				cons.Id = i
+				stmt.Scan(&cons.Status, &cons.Effected, &cons.MedicoID, &cons.ClientID, &cons.Price, &cons.Day, &cons.HourEnd, &cons.HourInit)
+				resp.Type = "Consulta Deletada"
+				resp.Data = append(resp.Data, cons)
+				_, errDb := db.DB.Query("Delete from consulta o where id = $1", i)
+				if errDb != nil {
+					fmt.Println(errDb)
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+			}
+			bJson, _ := json.Marshal(resp)
+			w.Write(bJson)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 func handlegetMedic(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if r.Method == "GET" {
@@ -294,6 +341,40 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleUpdateConsulta(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if r.Method == "POST" {
+		var consulta models.Consulta
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&consulta)
+		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where id=$1`, &consulta.Id)
+		if err == nil {
+			for stmt.Next() {
+				var count int
+				stmt.Scan(&count)
+				if count == 1 {
+					_, err := db.DB.Query("Update consulta SET price=$1, day=CAST($2 AS DATE), hourend=CAST($3 AS TIME), hourinit=CAST($4 AS TIME), clienteid=$5, medicid=$6, effected=$7, status=$8 where id=$9", &consulta.Price, &consulta.Day, &consulta.HourEnd, &consulta.HourInit, &consulta.ClientID, &consulta.MedicoID, &consulta.Effected, &consulta.Status, &consulta.Id)
+					if err != nil {
+						fmt.Println(err)
+						w.WriteHeader(http.StatusBadRequest)
+						return
+					}
+					fmt.Println("Query atualizada com Sucesso")
+				} else {
+					fmt.Println(err)
+					w.WriteHeader(http.StatusBadRequest)
+				}
+			}
+		} else {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		fmt.Print("Aqui")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 func handleClienteSingup(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if r.Method == "POST" {
@@ -333,6 +414,8 @@ func Router() {
 	http.HandleFunc("/client", handleClienteSingup)
 	http.HandleFunc("/medic", handleMedicoSingup)
 	http.HandleFunc("/getmedic/", handlegetMedic)
+	http.HandleFunc("/removeconsulta/", handleRemoveConsulta)
+	http.HandleFunc("/updateconsulta", handleUpdateConsulta)
 	http.HandleFunc("/getclient/", handlegetClient)
 	http.HandleFunc("/medics", handleMedics)
 	http.HandleFunc("/consultas/medic/", handleConsultasM)
