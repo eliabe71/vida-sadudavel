@@ -10,5 +10,8 @@ export default {
     },
     excluir:(id)=>{
         return api.get(`removeconsulta/${id}`)
+    },
+    atualizar:(consulta)=>{
+        return api.post('updateconsulta',consulta)
     }
 }

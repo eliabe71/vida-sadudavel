@@ -343,17 +343,19 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 
 func handleUpdateConsulta(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
+	fmt.Println(r.Method)
 	if r.Method == "POST" {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&consulta)
+		fmt.Println(consulta)
 		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where id=$1`, &consulta.Id)
 		if err == nil {
 			for stmt.Next() {
 				var count int
 				stmt.Scan(&count)
 				if count == 1 {
-					_, err := db.DB.Query("Update consulta SET price=$1, day=CAST($2 AS DATE), hourend=CAST($3 AS TIME), hourinit=CAST($4 AS TIME), clienteid=$5, medicid=$6, effected=$7, status=$8 where id=$9", &consulta.Price, &consulta.Day, &consulta.HourEnd, &consulta.HourInit, &consulta.ClientID, &consulta.MedicoID, &consulta.Effected, &consulta.Status, &consulta.Id)
+					_, err := db.DB.Query("Update consulta SET price=$1, day=CAST($2 AS DATE), hourend=CAST($3 AS TIME), hourinit=CAST($4 AS TIME), clientid=$5, medicid=$6, effected=$7, status=$8 where id=$9", &consulta.Price, &consulta.Day, &consulta.HourEnd, &consulta.HourInit, &consulta.ClientID, &consulta.MedicoID, &consulta.Effected, &consulta.Status, &consulta.Id)
 					if err != nil {
 						fmt.Println(err)
 						w.WriteHeader(http.StatusBadRequest)

@@ -17,14 +17,15 @@
                   <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
                 </div>
                 <div class="cart-footer">
-                  <span class="icon btn-excluir" data-bs-toggle="modal" data-bs-target="#confimationModal">
+                  <span class="icon btn-excluir" data-bs-toggle="modal" :data-bs-target="'#confModalexcluir'+c.id">
                     <font-awesome-icon :icon="['fas', 'trash-alt']" />
                   </span>
                   <router-link class="icon btn-editar" :to="{name: 'pacienteEditarConsulta',  params:{id:c.id, consulta:c} }">
                     <font-awesome-icon :icon="['fas', 'edit']" />
                   </router-link>
+                  <button class="btn-success btn-conc" data-bs-toggle="modal" :data-bs-target="'#confModalConc'+c.id">Marcar como concluída</button>
                 </div>
-                <div class="modal fade" id="confimationModal" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+                <div class="modal fade" :id="'confModalexcluir'+c.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -36,7 +37,24 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" v-on:click="excluirConsulta(c.id)" class="btn btn-danger">Excluir {{c.id}}</button>
+                        <button type="button" v-on:click="excluirConsulta(c.id)" data-bs-dismiss="modal" class="btn btn-danger">Excluir {{c.id}}</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal fade" :id="'confModalConc'+c.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="confimationModalLabel">Excluir consulta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Deseja realmente marcar consulta como concluída?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" v-on:click="marcarComoConcluida(c.id)" data-bs-dismiss="modal" class="btn btn-danger">Confirmar {{c.id}}</button>
                       </div>
                     </div>
                   </div>
@@ -46,7 +64,6 @@
           </tr>
         </table>
     </div>
-    
     </div>
 </template>
 
@@ -88,14 +105,33 @@ export default {
       res = res[2]+'/'+res[1]+'/'+res[0]
       return res
     },
+    formatDateJson(d){
+      let res = d.split('T')
+      res = res[0].split('-')
+      res = res[0]+'-'+res[1]+'-'+res[1]
+      return res
+    },
     formatHour(hour){
       let res = hour.split('T')
       res = res[1].split(':')
       res = res[0]+':'+res[1]
       return res
     },
-    excluirConsulta(id){
-      Consultas.excluir(id)
+    async excluirConsulta(id){
+      await Consultas.excluir(id)
+      this.$router.go()
+    },
+    async marcarComoConcluida(id){
+      let cons = this.consultas.filter(c => {
+        return (c.id === id)
+      })
+      cons[0].effected = true
+      cons[0].day = this.formatDateJson(cons[0].day)
+      cons[0].hourInit = this.formatHour(cons[0].hourInit)
+      cons[0].hourEnd = this.formatHour(cons[0].hourEnd)
+      console.log(cons[0])
+      await Consultas.atualizar(cons[0])
+      this.$router.go()
     }
   },
 
@@ -177,7 +213,6 @@ export default {
   height: 3vw;
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .icon {
@@ -191,10 +226,16 @@ export default {
 }
 
 .btn-editar{
-  color: var(--primary);
+  color: #1bf;
 }
 
 .btn-excluir{
   color: red;
+}
+
+.btn-conc{
+  float: right;
+  margin-right: 0.6vw;
+  margin-bottom: 2px;
 }
 </style>
