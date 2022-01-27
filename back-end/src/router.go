@@ -293,7 +293,7 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 				stmt.Scan(&count)
 				if count == 0 {
 					fmt.Println(consulta.ClientID)
-					_, err := db.DB.Query("Insert into Consulta (clientid,medicid,medicName,clientName,state,city,status, effected,price,day,hourinit, hourend) values($1,$2,(select name from medico where id = $2), (select (name||' '||lastname) from cliente where id=$1),(select state from medico where id=$2),(select city from medico where id=$2),$3,$4, $5,$6,CAST($7 AS TIME),CAST($8 AS TIME))", consulta.ClientID, consulta.MedicoID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit, consulta.HourEnd)
+					_, err := db.DB.Query("Insert into Consulta (clientid,medicid,medicName,clientName,state,city,status, effected,price,day,hourinit, hourend) values($1,$2,(select (name||' '||lastname) from medico where id = $2), (select (name||' '||lastname) from cliente where id=$1),(select state from medico where id=$2),(select city from medico where id=$2),$3,$4, $5,$6,CAST($7 AS TIME),CAST($8 AS TIME))", consulta.ClientID, consulta.MedicoID, consulta.Status, consulta.Effected, consulta.Price, consulta.Day, consulta.HourInit, consulta.HourEnd)
 					if err != nil {
 						fmt.Println(err)
 						w.WriteHeader(http.StatusBadRequest)
@@ -344,12 +344,13 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 func handleUpdateConsulta(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	fmt.Println(r.Method)
+	r.Method = "POST"
 	if r.Method == "POST" {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&consulta)
-		fmt.Println(consulta)
-		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where id=$1`, &consulta.Id)
+		fmt.Println(consulta.Id)
+		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where id=$1`, consulta.Id)
 		if err == nil {
 			for stmt.Next() {
 				var count int
@@ -363,6 +364,7 @@ func handleUpdateConsulta(w http.ResponseWriter, r *http.Request) {
 					}
 					fmt.Println("Query atualizada com Sucesso")
 				} else {
+					fmt.Println("HE")
 					fmt.Println(err)
 					w.WriteHeader(http.StatusBadRequest)
 				}

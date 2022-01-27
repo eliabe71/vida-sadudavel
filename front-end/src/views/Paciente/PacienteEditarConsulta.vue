@@ -5,7 +5,7 @@
     <form class="form">
        <div class="mb-3">
         <label for="medicoInput" class="form-label">Médico:</label>
-        <input type="text" class="form-control" id="medicoInput" disabled/>
+        <input type="text" class="form-control" id="medicoInput" v-model="consulta.medicName" disabled/>
       </div>
       <div class="mb-3">
         <label for="dataInput" class="form-label">Data:</label>
@@ -38,6 +38,10 @@ export default {
         effected:  this.$route.params.consulta.effected,
         medicId:  this.$route.params.consulta.medicId,
         clienteId:  this.$route.params.consulta.clienteId,
+        medicName: this.$route.params.consulta.medicName,
+        clientName: this.$route.params.consulta.clientName,
+        state: this.$route.params.consulta.state,
+        city: this.$route.params.consulta.city,
         price:  this.$route.params.consulta.price,
         day:  this.formatDate(this.$route.params.consulta.day),
         hourInit: this.formatHour(this.$route.params.consulta.hourInit),

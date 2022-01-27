@@ -12,6 +12,6 @@ export default {
         return api.get(`removeconsulta/${id}`)
     },
     atualizar:(consulta)=>{
-        return api.post('updateconsulta',consulta)
+        api.post('updateconsulta',{consulta})
     }
 }

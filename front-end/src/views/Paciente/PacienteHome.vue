@@ -121,7 +121,7 @@ export default {
       await Consultas.excluir(id)
       this.$router.go()
     },
-    async marcarComoConcluida(id){
+    marcarComoConcluida(id){
       let cons = this.consultas.filter(c => {
         return (c.id === id)
       })
@@ -130,8 +130,8 @@ export default {
       cons[0].hourInit = this.formatHour(cons[0].hourInit)
       cons[0].hourEnd = this.formatHour(cons[0].hourEnd)
       console.log(cons[0])
-      await Consultas.atualizar(cons[0])
-      this.$router.go()
+      Consultas.atualizar(cons[0])
+      //this.$router.go()
     }
   },
 
