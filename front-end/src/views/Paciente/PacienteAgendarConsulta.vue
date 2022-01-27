@@ -1,28 +1,27 @@
 <template>
-  <div id="pacienteAgendarConsulta">
+  <div id="pacienteAgendarConsulta" @submit="abrirModal()">
     <NavbarPaciente/>
     <h3>Agendar Consulta</h3>
-    <form class="form">
+    <form class="form" >
       <div class="mb-3">
         <label for="medicoInput" class="form-label">Médico:</label>
         <input type="text" timezone=[[pt-BR]] class="form-control" v-model="consulta.medicName" id="medicoInput" disabled/>
       </div>
       <div class="mb-3">
         <label for="dataInput" class="form-label">Data:</label>
-        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.day" />
+        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.day" required />
       </div>
       <div class="mb-3">
         <label for="horarioInput" class="form-label">Horário:</label>
-        <input type="time" class="form-control" id="horarioInput" v-model="consulta.hourInit" />
+        <input type="time" class="form-control" id="horarioInput" v-model="consulta.hourInit" required/>
       </div>
       <div class="mb-3">
         <label for="precoInput" class="form-label">Preço:</label>
         <input type="text" class="form-control" id="precoInput" v-model="consulta.price" disabled />
       </div>
-      <button class="btn-success">Agendar</button>
+      <button type="submit" class="btn-success" >Agendar</button>
       <router-link class="btn-voltar" to="/paciente/verMedicos"><button  class="btn-warning">Voltar</button></router-link>
     </form>
-
   </div>
     
 </template>
@@ -30,6 +29,7 @@
 <script>
 import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
 import Pacientes from '../../services/pacientes'
+import Consultas from '../../services/consultas'
 
 export default {
   data(){
@@ -38,7 +38,7 @@ export default {
         status: false,
         effected:  false,
         medicId:  null,
-        clienteId: null,
+        clientId: null,
         medicName: null,
         price:  null,
         day:  null,
@@ -53,17 +53,72 @@ export default {
       NavbarPaciente
   },
   mounted(){
-    this.init(),
     Pacientes.getPaciente(1).then(res => {
       this.pacienteLogado = res.data.Data[0]
-    })
+      this.consulta.clientId = res.data.Data[0].id
+    }),
+    this.init()
   },
   methods: {
+    abrirModal(){
+      let res = confirm("Deseja realmente marcar essa consulta?")
+      if(res === true){
+        this.agendarConsulta()
+      }
+    },
     init () {
       this.consulta.medicId = this.$route.params.medicId
       this.consulta.medicName = this.$route.params.medicName
       this.consulta.price = this.$route.params.price
     },
+    add25(h){
+      let aux = h.split(':')
+      if(aux[1] < 35){
+        let b = parseInt(aux[1])+25
+        if(b < 10)
+          return aux[0]+':0'+(b)
+        else
+          return aux[0]+':'+(b)
+      }
+      else{
+        if(aux[0]<23){
+          let a = parseInt(aux[0])+1
+          let b = (parseInt(aux[1])+25)%60
+          if(a < 10){
+            if(b<10)
+              return '0'+a+':0'+(b)
+            else
+              return '0'+a+':'+(b)
+          }else{
+            if(b<10)
+              return a+':0'+(b)
+            else
+              return a+':'+(b)
+          }
+        }
+        else{
+          let b = (parseInt(aux[1])+25)%60
+          if(b<10)
+            return '00'+':0'+b
+          else
+            return '00'+':'+b
+        }
+      }
+    },
+    agendarConsulta(){
+      let cons = this.consulta
+
+      cons.hourEnd = this.add25(cons.hourInit)
+
+      Consultas.cadastrar(cons).then(res => {
+        if(res.status === 200){
+          alert("Consulta marcada com sucesso!")
+          this.$router.push('/pacienteHome')
+        }
+        else
+          alert("Erro ao marcar consulta!")
+      })
+    }
   }
 }
 </script>

@@ -8,13 +8,30 @@
             <div class="card">
               <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo">
               <div class="card-body">
-                <h4 class="card-title">Solicitação de consulta</h4>
-                <p class="card-text">Paciente: </p>
-                <p class="card-text">Data: {{s.day}}</p>
-                <p class="card-text">Horário: </p>
+                <h5 class="card-title">Solicitação</h5>
+                <p class="card-text"><b>Paciente:</b>{{s.clientName}} </p>
+                <p class="card-text"><b>Data: </b>{{formatDate(s.day)}}</p>
+                <p class="card-text"><b>Horário:</b> {{formatHour(s.hourInit)}}</p>
               </div>
               <div class="cart-footer">
-                <button class="btn-success">Aceitar</button>
+                <button class="btn-success" data-bs-toggle="modal" :data-bs-target="'#confModalexcluir'+s.id" >Aceitar</button>
+              </div>
+            </div>
+            <div class="modal fade" :id="'confModalexcluir'+s.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="confimationModalLabel">Excluir consulta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Deseja realmente aceitar a solicitação de consulta?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" v-on:click="aceitarConsulta(s.id)" data-bs-dismiss="modal" class="btn btn-success">Confirmar</button>
+                  </div>
+                </div>
               </div>
             </div>
           </td>
@@ -54,8 +71,47 @@ export default {
           }
         }
         return res
+      },
+      formatDate(d){
+        let res = d.split('T')
+        res = res[0].split('-')
+        res = res[2]+'/'+res[1]+'/'+res[0]
+        return res
+      },
+      formatDateJson(d){
+        let res = d.split('T')
+        res = res[0].split('-')
+        res = res[0]+'-'+res[1]+'-'+res[1]
+        return res
+      },
+      formatHour(hour){
+        let res = hour.split('T')
+        res = res[1].split(':')
+        res = res[0]+':'+res[1]
+        return res
+      },
+      aceitarConsulta(id){
+        let cons = this.solicitacoes.filter(s => {
+          return (s.id === id)
+        })
+
+        cons[0].status = true
+        cons[0].day = this.formatDateJson(cons[0].day)
+        cons[0].hourInit = this.formatHour(cons[0].hourInit)
+        cons[0].hourEnd = this.formatHour(cons[0].hourEnd)
+        console.log(cons[0])
+
+        Consultas.atualizar(cons[0]).then(res => {
+          if(res.status === 200){
+            this.$router.go()
+            alert("Consulta aceita com sucesso!")
+          }
+          else
+            alert("Erro ao aceitar consulta!")
+        })
       }
     },
+    
   components: {
     NavbarMedico
   }

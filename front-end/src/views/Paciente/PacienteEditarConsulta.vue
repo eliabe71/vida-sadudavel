@@ -9,20 +9,19 @@
       </div>
       <div class="mb-3">
         <label for="dataInput" class="form-label">Data:</label>
-        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.day" />
+        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.day" requiered/>
       </div>
       <div class="mb-3">
         <label for="horarioInput" class="form-label">Horário:</label>
-        <input type="time" class="form-control" id="horarioInput" v-model="consulta.hourInit" />
+        <input type="time" class="form-control" id="horarioInput" v-model="consulta.hourInit" required/>
       </div>
       <div class="mb-3">
         <label for="precoInput" class="form-label">Preço:</label>
         <input type="text" class="form-control" id="precoInput" v-model="consulta.price" disabled />
       </div>
-      <button class="btn-success" v-on:click="atualizarConsulta()">Atualizar</button>
+      <button type="submit" class="btn-success" v-on:submit="atualizarConsulta()">Atualizar</button>
       <router-link class="btn-voltar" to="/pacienteHome"><button  class="btn-warning">Voltar</button></router-link>
     </form>
-   
   </div>
 </template>
 

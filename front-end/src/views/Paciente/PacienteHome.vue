@@ -9,7 +9,7 @@
               <div class="card">
                 <img src="../../assets/images/logo.png" class="card-img-top" alt="Logo"> 
                 <div class="card-body">
-                  <h4 class="card-title">Consulta</h4>
+                  <h5 class="card-title">Consulta</h5>
                   <p class="card-text"><b>Médico:</b> {{c.medicName}}</p>
                   <p class="card-text"><b>Local:</b> {{c.city+'-'+c.state}} </p>
                   <p class="card-text"><b>Data:</b> {{formatDate(c.day)}}</p>
@@ -37,7 +37,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" v-on:click="excluirConsulta(c.id)" data-bs-dismiss="modal" class="btn btn-danger">Excluir {{c.id}}</button>
+                        <button type="button" v-on:click="excluirConsulta(c.id)" data-bs-dismiss="modal" class="btn btn-danger">Excluir</button>
                       </div>
                     </div>
                   </div>
@@ -54,7 +54,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" v-on:click="marcarComoConcluida(c.id)" data-bs-dismiss="modal" class="btn btn-danger">Confirmar {{c.id}}</button>
+                        <button type="button" v-on:click="marcarComoConcluida(c.id)" data-bs-dismiss="modal" class="btn btn-danger">Confirmar</button>
                       </div>
                     </div>
                   </div>
@@ -70,19 +70,23 @@
 <script>
 import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
 import Consultas from '../../services/consultas'
+import Pacientes from '../../services/pacientes'
 
 export default {
   data(){
     return {
       consultas: [],
-      pacienteLogado: {id: 1},
+      pacienteLogado: {},
     }
   },
   mounted(){
-    Consultas.listarPorPaciente(this.pacienteLogado.id).then(res => {
+    Consultas.listarPorPaciente(1).then(res => {
       this.consultas = res.data.Data.filter(c => {
         return (c.status === true && c.effected === false)
       })
+    }),
+    Pacientes.getPaciente(1).then(res=>{
+      this.pacienteLogado = res.data.Data[0]
     })
   },
   methods: {

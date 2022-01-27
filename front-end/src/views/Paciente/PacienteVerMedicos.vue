@@ -2,29 +2,33 @@
   <div id="pacienteVerMedicos">
     <NavbarPaciente/>
     <div class="barra-pesquisa">
-      <form>
-        <select v-model="filter.especialidade" >
+      <form class="filtros">
+        <span class="filtro mess">Selecionar filtros</span>
+        <select class="filtro" v-model="filter.especialidade" >
           <option :value="null">Selecione a especialidade</option>
           <option v-for="(esp,index) in especialidades" :key="index" :value="esp">{{esp}}</option>
         </select>
-        <select v-model="filter.estado">
+        <select class="filtro" v-model="filter.estado">
+          <option :value="null">UF</option>
           <option v-for="(estado,index) in estados" :key="index">{{estado}}</option>
         </select>
-        <input type="text" placeholder="Cidade" v-model="filter.cidade"/>
+        <input class="filtro" type="text" placeholder="Cidade" v-model="filter.cidade"/>
       </form>
-      
-      <div>
-        <h2>Médicos</h2>
-        <h3 v-if="showMessage">Selecione todos os filtros para exibir os médicos</h3>
-        <ul class="lista">
-          <li class="item" v-for="med in filtraMedicos()" :key="med.id">
-            <span class="atributo"><b>Nome</b>: {{med.name}} {{med.lastName}}</span>
-            <span class="atributo"><b>Especialidade:</b> {{med.areaOfOcupation}}</span>
-            <span class="atributo"><b>Preço por consulta:</b> {{med.price}}</span>
-            <router-link :to="{name: 'pacienteAgendarConsulta', params:{id:med.id ,medicId: med.id, price: med.price, medicName: med.name+' '+med.lastName} }" >Agendar Consulta</router-link>
-          </li>
-        </ul>
-      </div>
+    </div>
+    <div class="principal">
+      <h2>Médicos</h2>
+      <h4 v-if="showMessage">Selecione todos os filtros para exibir os médicos</h4>
+      <ul class="lista">
+        <li class="item" v-for="med in filtraMedicos()" :key="med.id">
+          <span class="atributo"><b>Nome</b>: {{med.name}} {{med.lastName}}</span>
+          <span class="atributo"><b>Local</b>: {{med.city}}-{{med.state}}</span>
+          <span class="atributo"><b>Especialidade:</b> {{med.areaOfOcupation}}</span>
+          <span class="atributo"><b>Preço por consulta:</b> R$ {{med.price}},00</span>
+          <router-link :to="{name: 'pacienteAgendarConsulta', params:{id:med.id ,medicId: med.id, price: med.price, medicName: med.name+' '+med.lastName} }" >
+            <button class="btn-primary">Agendar Consulta</button>
+          </router-link>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -98,8 +102,35 @@ export default {
   background-color:  var(--primary);
 }
 
+.mess{
+  color: #fff;
+  font-weight: bold;
+  font-size: 15pt;
+}
+
+.filtros{
+
+  display: inline-block;
+  margin-top:10px;
+  margin-left: 30px;
+}
+
+.filtro{
+  max-width: 20vw;
+  height: 6vh;
+  margin-right:10px ;
+}
+
 h2{
+  color: #fff;
+  font-weight: bold;
   margin-top: 20px;
+  margin-left: 30px;
+}
+
+h4 {
+  color: rgb(211, 29, 29);
+  font-weight: bold;
   margin-left: 30px;
 }
 
@@ -108,10 +139,11 @@ h2{
 }
 
 .item{
+  background-color: #fff;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border: 2px solid #47b132;
+  border: 2px solid #cae05a;
   padding: 10px;
   list-style: none;
   margin: 10px 30px 0px 0px;
@@ -122,7 +154,8 @@ h2{
 }
 
 .btn-success{
-  width: 200px;
+  width: 300px;
+  border-radius: 5px;
 }
 
 </style>

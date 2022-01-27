@@ -18,6 +18,7 @@
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><router-link class="dropdown-item" to="/paciente/verMedicos">Ver médicos disponíveis</router-link></li>
               <li><router-link class="dropdown-item" to="/paciente/historicoConsultas">Meu histórico de consultas</router-link></li>
+              <li><router-link class="dropdown-item" to="/paciente/solicitacoes">Minhas solicitações de consulta</router-link></li>
             </ul>
           </li>
         </ul>

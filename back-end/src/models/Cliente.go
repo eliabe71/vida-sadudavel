@@ -1,9 +1,9 @@
 package models
 type Cliente struct{
-	Name string `json:"Name"`
-	LastName string `json:"LastName"`
-	Id int `json:"Id"`
-	City string `json:"City"`
-	State string `json:"State"`
-	Cpf string `json:"Cpf"`
+	Name string `json:"name"`
+	LastName string `json:"lastName"`
+	Id int `json:"id"`
+	City string `json:"city"`
+	State string `json:"state"`
+	Cpf string `json:"cpf"`
 }
