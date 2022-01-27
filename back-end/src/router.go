@@ -262,6 +262,10 @@ func handleRecepcionista(w http.ResponseWriter, r *http.Request) {
 }
 func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(200)
+		return
+	}
 	if r.Method == "POST" {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
@@ -313,6 +317,10 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 }
 func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(200)
+		return
+	}
 	if r.Method == "POST" {
 		var consulta models.Medico
 		dec := json.NewDecoder(r.Body)
@@ -385,6 +393,10 @@ func handleUpdateConsulta(w http.ResponseWriter, r *http.Request) {
 
 func handleClienteSingup(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(200)
+		return
+	}
 	if r.Method == "POST" {
 		var consulta models.Cliente
 		dec := json.NewDecoder(r.Body)
