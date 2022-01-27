@@ -3,9 +3,9 @@
     <NavbarPaciente/>
     <h3>Agendar Consulta</h3>
     <form class="form">
-       <div class="mb-3">
+      <div class="mb-3">
         <label for="medicoInput" class="form-label">Médico:</label>
-        <input type="text" class="form-control" id="medicoInput" v-model="this.$route.medico.name" disabled/>
+        <input type="text" timezone=[[pt-BR]] class="form-control" v-model="consulta.medicName" id="medicoInput" disabled/>
       </div>
       <div class="mb-3">
         <label for="dataInput" class="form-label">Data:</label>
@@ -37,13 +37,15 @@ export default {
       consulta: {
         status: false,
         effected:  false,
-        medicId:  this.$route.params.medico.id,
-        clienteId: this.pacienteLogado.id,
-        price:  this.$route.params.medico.price,
-        day:  '',
-        hourInit: '',
-        hourEnd: '',
+        medicId:  null,
+        clienteId: null,
+        medicName: null,
+        price:  null,
+        day:  null,
+        hourInit: null,
+        hourEnd: null,
       },
+
       pacienteLogado: {}
     }
   },
@@ -51,9 +53,17 @@ export default {
       NavbarPaciente
   },
   mounted(){
+    this.init(),
     Pacientes.getPaciente(1).then(res => {
       this.pacienteLogado = res.data.Data[0]
     })
+  },
+  methods: {
+    init () {
+      this.consulta.medicId = this.$route.params.medicId
+      this.consulta.medicName = this.$route.params.medicName
+      this.consulta.price = this.$route.params.price
+    },
   }
 }
 </script>
@@ -71,10 +81,10 @@ export default {
   background-color:  var(--primary);
 }
 
-h1{
+h3{
   margin-left: 20px;
   color: #fff;
-
+  margin-top: 10px;
 }
 
 .form{

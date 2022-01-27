@@ -12,6 +12,9 @@ export default {
         return api.get(`removeconsulta/${id}`)
     },
     atualizar:(consulta)=>{
-        api.post('updateconsulta',consulta)
+        return api.post('updateconsulta',consulta)
+    },
+    cadastrar:(consulta)=>{
+        return api.post('consulta',consulta)
     }
 }

@@ -117,9 +117,15 @@ export default {
       res = res[0]+':'+res[1]
       return res
     },
-    async excluirConsulta(id){
-      await Consultas.excluir(id)
-      this.$router.go()
+    excluirConsulta(id){
+      Consultas.excluir(id).then(res => {
+        if(res.status === 200){
+          this.$router.go()
+          alert("Consulta excluída com sucesso!")
+        }else
+          alert("Erro ao excluir consulta!")
+
+      })
     },
     marcarComoConcluida(id){
       let cons = this.consultas.filter(c => {
@@ -130,12 +136,16 @@ export default {
       cons[0].hourInit = this.formatHour(cons[0].hourInit)
       cons[0].hourEnd = this.formatHour(cons[0].hourEnd)
       console.log(cons[0])
-      Consultas.atualizar(cons[0])
-      //this.$router.go()
+      Consultas.atualizar(cons[0]).then(res => {
+        if(res.status === 200){
+          this.$router.go()
+          alert("Consulta concluída com sucesso!")
+        }
+        else
+          alert("Erro ao concluir consulta!")
+      })
     }
   },
-
-  
 
   components:{
     NavbarPaciente

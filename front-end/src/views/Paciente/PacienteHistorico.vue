@@ -17,11 +17,28 @@
                 <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
                 </div>
                 <div class="cart-footer">
-                  <span class="icon btn-excluir" >
+                  <span class="icon btn-excluir" data-bs-toggle="modal" :data-bs-target="'#confModalexcluir'+c.id">
                       <font-awesome-icon :icon="['fas', 'trash-alt']" />
                   </span>
                 </div>
               </div>
+              <div class="modal fade" :id="'confModalexcluir'+c.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="confimationModalLabel">Excluir consulta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Deseja realmente excluir a consulta do histórico?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" v-on:click="excluirConsulta(c.id)" data-bs-dismiss="modal" class="btn btn-danger">Excluir {{c.id}}</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </td>
           </tr>
         </table>
@@ -72,7 +89,16 @@ export default {
       res = res[1].split(':')
       res = res[0]+':'+res[1]
       return res
-    }
+    },
+    excluirConsulta(id){
+      Consultas.excluir(id).then(res => {
+        if(res.status === 200){
+          this.$router.go()
+          alert("Consulta excluída com sucesso!")
+        }else
+          alert("Erro ao excluir consulta!")
+      })
+    },
   },
   components:{
     NavbarPaciente

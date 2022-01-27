@@ -15,12 +15,13 @@
       
       <div>
         <h2>Médicos</h2>
+        <h3 v-if="showMessage">Selecione todos os filtros para exibir os médicos</h3>
         <ul class="lista">
           <li class="item" v-for="med in filtraMedicos()" :key="med.id">
             <span class="atributo"><b>Nome</b>: {{med.name}} {{med.lastName}}</span>
             <span class="atributo"><b>Especialidade:</b> {{med.areaOfOcupation}}</span>
             <span class="atributo"><b>Preço por consulta:</b> {{med.price}}</span>
-            <router-link :to="{name: 'pacienteAgendarConsulta',  params:{medico: med} }" >Agendar Consulta</router-link>
+            <router-link :to="{name: 'pacienteAgendarConsulta', params:{id:med.id ,medicId: med.id, price: med.price, medicName: med.name+' '+med.lastName} }" >Agendar Consulta</router-link>
           </li>
         </ul>
       </div>
@@ -45,7 +46,8 @@ export default {
         cidade: null
         },
       especialidades: ['Ortopedia','Pediatria','Dermatologia','Geriatria'],
-      estados: ['CE','SP','AM']
+      estados: ['CE','SP','AM'],
+      showMessage: true
     }
   },
   mounted(){
@@ -77,6 +79,7 @@ export default {
         else
           return false
       })
+      this.showMessage = !(res.length > 0)
       return res
     }
   }

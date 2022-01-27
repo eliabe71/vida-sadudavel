@@ -288,7 +288,7 @@ func handleConsultasSingup(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and day = $2 and hourinit>=CAST($3 AS TIME) and hourinit < CAST($3 AS TIME) + interval '25 minutes'`, consulta.MedicoID, consulta.Day, consulta.HourInit)
+		stmt, err := db.DB.Query(`SELECT Count(*) From consulta Where medicId=$1 and day = $2 and hourinit>=CAST($3 AS TIME) and hourinit < CAST($3 AS TIME) + interval '25 minutes' and effected=false and status=true`, consulta.MedicoID, consulta.Day, consulta.HourInit)
 		if err == nil {
 			for stmt.Next() {
 				var count int

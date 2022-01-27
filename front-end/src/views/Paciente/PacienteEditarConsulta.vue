@@ -19,7 +19,7 @@
         <label for="precoInput" class="form-label">Preço:</label>
         <input type="text" class="form-control" id="precoInput" v-model="consulta.price" disabled />
       </div>
-      <button class="btn-success">Atualizar</button>
+      <button class="btn-success" v-on:click="atualizarConsulta()">Atualizar</button>
       <router-link class="btn-voltar" to="/pacienteHome"><button  class="btn-warning">Voltar</button></router-link>
     </form>
    
@@ -28,29 +28,45 @@
 
 <script>
 import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
+import Consultas from '../../services/consultas'
 
 export default {
   data(){
     return{
       consulta: {
-        id: this.$route.params.consulta.id,
-        status: this.$route.params.consulta.status,
-        effected:  this.$route.params.consulta.effected,
-        medicId:  this.$route.params.consulta.medicId,
-        clienteId:  this.$route.params.consulta.clienteId,
-        medicName: this.$route.params.consulta.medicName,
-        clientName: this.$route.params.consulta.clientName,
-        state: this.$route.params.consulta.state,
-        city: this.$route.params.consulta.city,
-        price:  this.$route.params.consulta.price,
-        day:  this.formatDate(this.$route.params.consulta.day),
-        hourInit: this.formatHour(this.$route.params.consulta.hourInit),
-        hourEnd: this.formatHour(this.$route.params.consulta.hourEnd)
+        id: null,
+        status: null,
+        effected:  null,
+        medicId:  null,
+        clientId:  null,
+        medicName: null,
+        clientName: null,
+        state: null,
+        city: null,
+        price:  null,
+        day:  null,
+        hourInit: null,
+        hourEnd: null
       }
     }
   },
   components:{
     NavbarPaciente
+  },
+  mounted(){
+      this.consulta.id = this.$route.params.consulta.id
+      this.consulta.status = this.$route.params.consulta.status
+      this.consulta.effected =  this.$route.params.consulta.effected
+      this.consulta.medicId = this.$route.params.consulta.medicId
+      this.consulta.clientId = this.$route.params.consulta.clientId
+      this.consulta.medicName = this.$route.params.consulta.medicName
+      this.consulta.clientName = this.$route.params.consulta.clientName
+      this.consulta.state = this.$route.params.consulta.state
+      this.consulta.city = this.$route.params.consulta.city
+      this.consulta.price =  this.$route.params.consulta.price
+      this.consulta.day =  this.formatDate(this.$route.params.consulta.day)
+      this.consulta.hourInit = this.formatHour(this.$route.params.consulta.hourInit)
+      this.consulta.hourEnd = this.formatHour(this.$route.params.consulta.hourEnd)
   },
   methods:{
     formatDate(d){
@@ -63,6 +79,55 @@ export default {
       res = res[1].split(':')
       res = res[0]+':'+res[1]
       return res
+    },
+    add25(h){
+      let aux = h.split(':')
+      if(aux[1] < 35){
+        let b = parseInt(aux[1])+25
+        if(b < 10)
+          return aux[0]+':0'+(b)
+        else
+          return aux[0]+':'+(b)
+      }
+      else{
+        if(aux[0]<23){
+          let a = parseInt(aux[0])+1
+          let b = (parseInt(aux[1])+25)%60
+          if(a < 10){
+            if(b<10)
+              return '0'+a+':0'+(b)
+            else
+              return '0'+a+':'+(b)
+          }else{
+            if(b<10)
+              return a+':0'+(b)
+            else
+              return a+':'+(b)
+          }
+        }
+        else{
+          let b = (parseInt(aux[1])+25)%60
+          if(b<10)
+            return '00'+':0'+b
+          else
+            return '00'+':'+b
+        }
+      }
+    },
+    atualizarConsulta(){
+      let cons = this.consulta
+      cons.status = false
+
+      cons.hourEnd = this.add25(cons.hourInit)
+
+      Consultas.atualizar(cons).then(res => {
+        if(res.status === 200){
+          alert("Consulta remarcada com sucesso!")
+          this.$router.push('/pacienteHome')
+        }
+        else
+          alert("Erro ao remarcar consulta!")
+      })
     }
   }
 }
