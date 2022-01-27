@@ -43,19 +43,19 @@ export default {
     })
   },
   methods:{
-  divide(cons){
-      let res = []
-      let aux = []
-      for(let i=0; i<cons.length; i++){
-        aux.push(cons[i])
-        if(((i+1)%4 === 0 && i !== 0) || i === cons.length-1){
-          res.push(aux)
-          aux = []
+    divide(cons){
+        let res = []
+        let aux = []
+        for(let i=0; i<cons.length; i++){
+          aux.push(cons[i])
+          if(((i+1)%4 === 0 && i !== 0) || i === cons.length-1){
+            res.push(aux)
+            aux = []
+          }
         }
+        return res
       }
-      return res
-    }
-  },
+    },
   components: {
     NavbarMedico
   }

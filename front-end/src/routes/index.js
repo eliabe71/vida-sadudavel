@@ -5,6 +5,7 @@ import PacienteHistorico from '../views/Paciente/PacienteHistorico.vue'
 import PacienteVerMedicos from '../views/Paciente/PacienteVerMedicos.vue'
 import MedicoHome from '../views/Medico/MedicoHome.vue'
 import MedicoSolicitacoes from '../views/Medico/MedicoSolicitacoes.vue'
+import PacienteAgendarConsulta from '../views/Paciente/PacienteAgendarConsulta.vue'
 
 export default [
   {
@@ -32,6 +33,12 @@ export default [
     path: '/paciente/verMedicos',
     name: 'pacienteVerMedicos',
     component: PacienteVerMedicos
+  },
+  {
+    path: '/paciente/agendarConsulta',
+    name: 'pacienteAgendarConsulta',
+    component: PacienteAgendarConsulta,
+    params: true
   },
   {
     path: '/medicoHome',

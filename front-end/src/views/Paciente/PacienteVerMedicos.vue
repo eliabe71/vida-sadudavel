@@ -16,11 +16,11 @@
       <div>
         <h2>Médicos</h2>
         <ul class="lista">
-          <li class="item" v-for="medico in filtraMedicos()" :key="medico.id">
-            <span class="atributo"><b>Nome</b>: {{medico.name}} {{medico.lastName}}</span>
-            <span class="atributo"><b>Especialidade:</b> {{medico.areaOfOcupation}}</span>
-            <span class="atributo"><b>Preço por consulta:</b> {{medico.price}}</span>
-            <button class="btn-success">Agendar Consulta</button>
+          <li class="item" v-for="med in filtraMedicos()" :key="med.id">
+            <span class="atributo"><b>Nome</b>: {{med.name}} {{med.lastName}}</span>
+            <span class="atributo"><b>Especialidade:</b> {{med.areaOfOcupation}}</span>
+            <span class="atributo"><b>Preço por consulta:</b> {{med.price}}</span>
+            <router-link :to="{name: 'pacienteAgendarConsulta',  params:{medico: med} }" >Agendar Consulta</router-link>
           </li>
         </ul>
       </div>
@@ -32,12 +32,13 @@
 <script>
 import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
 import Medico from '../../services/medicos'
+import Pacientes from '../../services/pacientes'
 
 export default {
   data(){
     return{
       medicos: [],
-
+      pacienteLogado: {},
       filter: {
         especialidade: null,
         estado: null,
@@ -49,7 +50,10 @@ export default {
   },
   mounted(){
     Medico.listar().then(res => {
-      this.medicos = res.data.Data !== null ? res.data.Data : []
+      this.medicos = res.data.Data 
+    }),
+    Pacientes.getPaciente(1).then(res => {
+      this.pacienteLogado = res.data.Data[0]
     })
   },
   components:{
@@ -80,6 +84,16 @@ export default {
 </script>
 
 <style>
+
+*{
+  font-family: Arial, Sans-serif, times;
+}
+
+#pacienteVerMedicos {
+  width: 100vw;
+  height: 100vh;
+  background-color:  var(--primary);
+}
 
 h2{
   margin-top: 20px;

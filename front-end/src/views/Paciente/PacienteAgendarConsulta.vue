@@ -1,7 +1,110 @@
 <template>
+  <div id="pacienteAgendarConsulta">
+    <NavbarPaciente/>
+    <h3>Agendar Consulta</h3>
+    <form class="form">
+       <div class="mb-3">
+        <label for="medicoInput" class="form-label">Médico:</label>
+        <input type="text" class="form-control" id="medicoInput" v-model="this.$route.medico.name" disabled/>
+      </div>
+      <div class="mb-3">
+        <label for="dataInput" class="form-label">Data:</label>
+        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.day" />
+      </div>
+      <div class="mb-3">
+        <label for="horarioInput" class="form-label">Horário:</label>
+        <input type="time" class="form-control" id="horarioInput" v-model="consulta.hourInit" />
+      </div>
+      <div class="mb-3">
+        <label for="precoInput" class="form-label">Preço:</label>
+        <input type="text" class="form-control" id="precoInput" v-model="consulta.price" disabled />
+      </div>
+      <button class="btn-success">Agendar</button>
+      <router-link class="btn-voltar" to="/paciente/verMedicos"><button  class="btn-warning">Voltar</button></router-link>
+    </form>
+
+  </div>
     
 </template>
 
+<script>
+import NavbarPaciente from '../../components/NavbarPaciente/NavbarPaciente.vue'
+import Pacientes from '../../services/pacientes'
+
+export default {
+  data(){
+    return{
+      consulta: {
+        status: false,
+        effected:  false,
+        medicId:  this.$route.params.medico.id,
+        clienteId: this.pacienteLogado.id,
+        price:  this.$route.params.medico.price,
+        day:  '',
+        hourInit: '',
+        hourEnd: '',
+      },
+      pacienteLogado: {}
+    }
+  },
+  components:{
+      NavbarPaciente
+  },
+  mounted(){
+    Pacientes.getPaciente(1).then(res => {
+      this.pacienteLogado = res.data.Data[0]
+    })
+  }
+}
+</script>
+
+
 <style>
+
+*{
+  font-family: Arial, Sans-serif, times;
+}
+
+#pacienteAgendarConsulta {
+  width: 100vw;
+  height: 100vh;
+  background-color:  var(--primary);
+}
+
+h1{
+  margin-left: 20px;
+  color: #fff;
+
+}
+
+.form{
+  width: 50%;
+  margin-left: 20px;
+  margin-top: 30px;
+  padding: 20px 10px;
+  border: 2px solid #aaa;
+  border-radius: 8px;
+  background-color: var(--background-default);
+}
+
+.btn-success{
+  width: 40%;
+  height: 40px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-voltar{
+  color: #fff;
+}
+
+.btn-warning{
+  width: 40%;
+  height: 40px;
+  border-radius: 6px;
+  color: #fff !important;
+  font-weight: bold;
+  float: right;
+}
 
 </style>

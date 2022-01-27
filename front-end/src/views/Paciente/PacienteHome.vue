@@ -23,7 +23,7 @@
                   <router-link class="icon btn-editar" :to="{name: 'pacienteEditarConsulta',  params:{id:c.id, consulta:c} }">
                     <font-awesome-icon :icon="['fas', 'edit']" />
                   </router-link>
-                  <button class="btn-success btn-conc" data-bs-toggle="modal" :data-bs-target="'#confModalConc'+c.id">Marcar como concluída</button>
+                  <button class="btn-success btn-conc" data-bs-toggle="modal" :data-bs-target="'#confModalConc'+c.id">Concluída</button>
                 </div>
                 <div class="modal fade" :id="'confModalexcluir'+c.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered">

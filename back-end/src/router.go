@@ -18,6 +18,8 @@ var db *database.Db
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+    (*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
 
 func handleMedics(w http.ResponseWriter, r *http.Request) {
@@ -343,8 +345,10 @@ func handleMedicoSingup(w http.ResponseWriter, r *http.Request) {
 
 func handleUpdateConsulta(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	fmt.Println(r.Method)
-	r.Method = "POST"
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(200)
+		return
+	}	
 	if r.Method == "POST" {
 		var consulta models.Consulta
 		dec := json.NewDecoder(r.Body)
