@@ -17,7 +17,7 @@
                 <p class="card-text"><b>Preço:</b> R$ {{c.price}},00</p>
               </div>
               <div class="cart-footer">
-                <button class="btn-danger btn-excluir" data-bs-toggle="modal" :data-bs-target="'#confModalexcluir'+c.id">Excluir solicitação</button>
+                <button class="btn-danger btn-excluir" data-bs-toggle="modal" :data-bs-target="'#confModalexcluir'+c.id">Cancelar solicitação</button>
               </div>
               <div class="modal fade" :id="'confModalexcluir'+c.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -89,7 +89,7 @@ export default {
     formatDateJson(d){
       let res = d.split('T')
       res = res[0].split('-')
-      res = res[0]+'-'+res[1]+'-'+res[1]
+      res = res[0]+'-'+res[1]+'-'+res[2]
       return res
     },
     formatHour(hour){

@@ -112,7 +112,7 @@ export default {
     formatDateJson(d){
       let res = d.split('T')
       res = res[0].split('-')
-      res = res[0]+'-'+res[1]+'-'+res[1]
+      res = res[0]+'-'+res[1]+'-'+res[2]
       return res
     },
     formatHour(hour){

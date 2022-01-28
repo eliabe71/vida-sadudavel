@@ -19,7 +19,7 @@
         <label for="precoInput" class="form-label">Preço:</label>
         <input type="text" class="form-control" id="precoInput" v-model="consulta.price" disabled />
       </div>
-      <button type="submit" class="btn-success" v-on:submit="atualizarConsulta()">Atualizar</button>
+      <button type="button" class="btn-success" v-on:click="atualizarConsulta()">Atualizar</button>
       <router-link class="btn-voltar" to="/pacienteHome"><button  class="btn-warning">Voltar</button></router-link>
     </form>
   </div>
@@ -66,6 +66,21 @@ export default {
       this.consulta.day =  this.formatDate(this.$route.params.consulta.day)
       this.consulta.hourInit = this.formatHour(this.$route.params.consulta.hourInit)
       this.consulta.hourEnd = this.formatHour(this.$route.params.consulta.hourEnd)
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth() + 1; //January is 0!
+      var yyyy = today.getFullYear();
+
+      if (dd < 10) {
+        dd = '0' + dd;
+      }
+
+      if (mm < 10) {
+        mm = '0' + mm;
+      } 
+          
+      today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("dataInput").setAttribute("min", today);
   },
   methods:{
     formatDate(d){

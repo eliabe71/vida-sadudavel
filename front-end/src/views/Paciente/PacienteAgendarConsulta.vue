@@ -9,7 +9,7 @@
       </div>
       <div class="mb-3">
         <label for="dataInput" class="form-label">Data:</label>
-        <input type="date" timezone=[[pt-BR]] class="form-control" id="dataInput" v-model="consulta.day" required />
+        <input type="date" timezone=[[pt-BR]]  class="form-control" id="dataInput" v-model="consulta.day" required />
       </div>
       <div class="mb-3">
         <label for="horarioInput" class="form-label">Horário:</label>
@@ -58,6 +58,21 @@ export default {
       this.consulta.clientId = res.data.Data[0].id
     }),
     this.init()
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    } 
+        
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("dataInput").setAttribute("min", today);
   },
   methods: {
     abrirModal(){

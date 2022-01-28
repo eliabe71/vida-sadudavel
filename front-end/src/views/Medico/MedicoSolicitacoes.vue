@@ -14,10 +14,11 @@
                 <p class="card-text"><b>Horário:</b> {{formatHour(s.hourInit)}}</p>
               </div>
               <div class="cart-footer">
-                <button class="btn-success" data-bs-toggle="modal" :data-bs-target="'#confModalexcluir'+s.id" >Aceitar</button>
+                <button class="btn btn-success btn-aceitar" data-bs-toggle="modal" :data-bs-target="'#confModalAceitar'+s.id" >Aceitar</button>
+                <button class="btn btn-danger btn-recusar" data-bs-toggle="modal" :data-bs-target="'#confModalExcluir'+s.id" >Recusar</button>
               </div>
             </div>
-            <div class="modal fade" :id="'confModalexcluir'+s.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+            <div class="modal fade" :id="'confModalAceitar'+s.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -30,6 +31,23 @@
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" v-on:click="aceitarConsulta(s.id)" data-bs-dismiss="modal" class="btn btn-success">Confirmar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" :id="'confModalExcluir'+s.id" tabindex="-1" aria-labelledby="confimationModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="confimationModalLabel">Excluir consulta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Deseja realmente aceitar a solicitação de consulta?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" v-on:click="excluirConsulta(s.id)" data-bs-dismiss="modal" class="btn btn-success">Confirmar</button>
                   </div>
                 </div>
               </div>
@@ -81,7 +99,7 @@ export default {
       formatDateJson(d){
         let res = d.split('T')
         res = res[0].split('-')
-        res = res[0]+'-'+res[1]+'-'+res[1]
+        res = res[0]+'-'+res[1]+'-'+res[2]
         return res
       },
       formatHour(hour){
@@ -109,8 +127,18 @@ export default {
           else
             alert("Erro ao aceitar consulta!")
         })
+      },
+      excluirConsulta(id){
+        Consultas.excluir(id).then(res => {
+          if(res.status === 200){
+            this.$router.go()
+            alert("Solicitação recusada com sucesso!")
+          }else
+            alert("Erro ao recusar solicitação!")
+        })
       }
     },
+
     
   components: {
     NavbarMedico
@@ -177,4 +205,18 @@ export default {
   align-items: center;
   justify-content: center;
 }
+.btn{
+  margin-bottom: 10px;
+}
+
+.btn-aceitar{
+  margin-left: 10px;
+  float: left;
+}
+
+.btn-recusar{
+  margin-right: 10px;
+  float: right;
+}
+
 </style>
